@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>NX Coin</title>
 
-<!-- Telegram SDK: keep this early -->
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
 <style>
@@ -538,14 +537,11 @@ Confirm
 
 /* =========================================================
    FAST INITIALIZATION
-   UI IS NEVER BLOCKED BY API
 ========================================================= */
 
 const tg =
 window.Telegram?.WebApp || null;
 
-
-/* Telegram must be initialized immediately */
 if(tg){
 
 try{
@@ -605,10 +601,15 @@ user:null
 
 };
 
-
 let openedTasks=new Set();
 
 let cooldowns={};
+
+/*
+ Telegram tasks are ONE-TIME tasks.
+ Their completed state is kept separately.
+*/
+let telegramDone={};
 
 let cooldownTimer=null;
 
@@ -616,6 +617,66 @@ let pendingWithdrawal={
 wallet:"",
 amount:0
 };
+
+
+/* =========================================================
+   TELEGRAM DONE STORAGE
+========================================================= */
+
+function telegramDoneKey(id){
+
+return "nx_telegram_done_"+Number(id);
+
+}
+
+
+function isTelegramDone(id){
+
+return telegramDone[Number(id)]===true;
+
+}
+
+
+function markTelegramDone(id){
+
+const taskId=Number(id);
+
+telegramDone[taskId]=true;
+
+localStorage.setItem(
+telegramDoneKey(taskId),
+"1"
+);
+
+}
+
+
+function loadTelegramDone(){
+
+telegramDone={};
+
+if(!state.tasks.length)
+return;
+
+state.tasks.forEach(task=>{
+
+if(task.type!=="telegram")
+return;
+
+const value=
+localStorage.getItem(
+telegramDoneKey(task.id)
+);
+
+if(value==="1"){
+
+telegramDone[Number(task.id)]=true;
+
+}
+
+});
+
+}
 
 
 /* =========================================================
@@ -715,7 +776,7 @@ return data;
 
 
 /* =========================================================
-   COOLDOWN
+   YOUTUBE COOLDOWN ONLY
 ========================================================= */
 
 function cooldownKey(id){
@@ -726,6 +787,21 @@ return "nx_task_cd_"+Number(id);
 
 
 function saveCooldown(id,next){
+
+const task=
+state.tasks.find(
+x=>Number(x.id)===Number(id)
+);
+
+if(!task)
+return;
+
+/*
+ IMPORTANT:
+ Telegram tasks NEVER get cooldown.
+*/
+if(task.type==="telegram")
+return;
 
 const time=
 new Date(next).getTime();
@@ -748,6 +824,19 @@ function loadCooldowns(){
 cooldowns={};
 
 state.tasks.forEach(task=>{
+
+/*
+ Telegram tasks never load cooldown.
+*/
+if(task.type==="telegram"){
+
+localStorage.removeItem(
+cooldownKey(task.id)
+);
+
+return;
+
+}
 
 const raw=
 localStorage.getItem(
@@ -780,6 +869,17 @@ cooldowns[Number(task.id)]=time;
 
 
 function remaining(id){
+
+const task=
+state.tasks.find(
+x=>Number(x.id)===Number(id)
+);
+
+/*
+ Telegram tasks have NO cooldown.
+*/
+if(task?.type==="telegram")
+return 0;
 
 const time=
 Number(cooldowns[Number(id)]||0);
@@ -860,7 +960,7 @@ renderTasks();
 
 
 /* =========================================================
-   SYNC - BACKGROUND ONLY
+   SYNC
 ========================================================= */
 
 async function sync(){
@@ -906,7 +1006,15 @@ state.user=
 data.user||null;
 
 
+/*
+ Load YouTube cooldowns.
+*/
 loadCooldowns();
+
+/*
+ Load permanent Telegram Done states.
+*/
+loadTelegramDone();
 
 renderState();
 
@@ -994,9 +1102,11 @@ wallet:"navWallet"
 };
 
 Object.values(navs).forEach(id=>{
+
 document
 .getElementById(id)
 .classList.remove("active");
+
 });
 
 document
@@ -1038,33 +1148,48 @@ state.tasks.map(task=>{
 
 const id=Number(task.id);
 
+const telegram=
+task.type==="telegram";
+
+/*
+ YouTube only:
+ 24h cooldown.
+
+ Telegram:
+ permanent Done.
+*/
 const left=
-remaining(id);
+telegram?0:remaining(id);
 
 const cooldown=
-left>0;
+!telegram && left>0;
+
+const done=
+telegram && isTelegramDone(id);
 
 const opened=
 openedTasks.has(id);
-
-const telegram=
-task.type==="telegram";
 
 let text=
 telegram?"Join":"Watch";
 
 let cls="";
 
-if(cooldown){
+if(done){
+
+text="✓ Done";
+cls="success";
+
+}else if(cooldown){
 
 text=formatCooldown(left);
 cls="cooldown";
 
 }else if(opened){
 
-text="Claim "+Number(
-task.reward||50
-)+" NX";
+text="Claim "+
+Number(task.reward||50)+
+" NX";
 
 cls="primary";
 
@@ -1093,7 +1218,7 @@ ${escapeHtml(task.title||"Task")}
 <button
 class="task-btn ${cls}"
 onclick="taskAction(${id})"
-${cooldown?"disabled":""}
+${cooldown||done?"disabled":""}
 >
 ${text}
 </button>
@@ -1121,7 +1246,27 @@ x=>Number(x.id)===Number(id)
 if(!task)
 return;
 
+
+/*
+ Telegram task already completed.
+*/
 if(
+task.type==="telegram" &&
+isTelegramDone(id)
+){
+
+showToast("✓ Task already completed.");
+
+return;
+
+}
+
+
+/*
+ Cooldown applies ONLY to YouTube.
+*/
+if(
+task.type!=="telegram" &&
 remaining(id)>0
 ){
 
@@ -1211,10 +1356,7 @@ tg.openTelegramLink(url);
 
 }else{
 
-window.open(
-url,
-"_blank"
-);
+window.open(url,"_blank");
 
 }
 
@@ -1226,6 +1368,17 @@ url,
 ========================================================= */
 
 async function claimTask(id){
+
+const task=
+state.tasks.find(
+x=>Number(x.id)===Number(id)
+);
+
+if(!task)
+return;
+
+const telegram=
+task.type==="telegram";
 
 try{
 
@@ -1251,9 +1404,38 @@ state.balance
 openedTasks.delete(id);
 
 
+/*
+ TELEGRAM:
+ One-time task.
+ No cooldown.
+ Permanently mark Done.
+*/
+if(telegram){
+
+markTelegramDone(id);
+
+renderState();
+renderTasks();
+
+showToast(
+"🎉 +"+
+Number(result.reward||50)+
+" NX Coins added!"
+);
+
+return;
+
+}
+
+
+/*
+ YOUTUBE:
+ 24h cooldown.
+*/
 saveCooldown(
 id,
 result.nextClaimAt||
+result.next_claim_at||
 (
 Date.now()+
 CONFIG.TASK_COOLDOWN_HOURS*
@@ -1276,10 +1458,38 @@ Number(result.reward||50)+
 
 openedTasks.delete(id);
 
-renderTasks();
-
 const data=
 error.data||{};
+
+
+/*
+ Telegram task:
+ Backend says already claimed.
+ Mark Done locally.
+*/
+if(
+telegram &&
+(
+data.reason==="ALREADY_CLAIMED" ||
+data.reason==="TASK_ALREADY_CLAIMED"
+)
+){
+
+markTelegramDone(id);
+
+renderTasks();
+
+showToast(
+"✓ Task already completed."
+);
+
+return;
+
+}
+
+
+renderTasks();
+
 
 if(
 data.reason==="CHANNEL_NOT_JOINED"
@@ -1298,15 +1508,30 @@ return;
 
 }
 
+
+/*
+ Cooldown is only relevant for YouTube.
+*/
 if(
+!telegram &&
 data.reason==="COOLDOWN"
 ){
 
-if(data.next_claim_at)
+if(data.next_claim_at){
+
 saveCooldown(
 id,
 data.next_claim_at
 );
+
+}else if(data.nextClaimAt){
+
+saveCooldown(
+id,
+data.nextClaimAt
+);
+
+}
 
 renderTasks();
 
@@ -1317,6 +1542,7 @@ showToast(
 return;
 
 }
+
 
 showToast(
 error.message||
@@ -1579,6 +1805,7 @@ if(
 ){
 
 closeWithdrawModal();
+
 return;
 
 }
@@ -1797,20 +2024,14 @@ return String(value)
    START
 ========================================================= */
 
-/*
- IMPORTANT:
- We DO NOT await sync here.
-
- UI appears immediately.
- Backend sync happens in background.
- This reduces perceived Mini App load time.
-*/
-
 immediateUI();
 
 startCooldownTimer();
 
-/* Background sync — does not block initial render */
+/*
+ UI appears immediately.
+ Backend sync happens in background.
+*/
 setTimeout(
 ()=>{
 sync();
