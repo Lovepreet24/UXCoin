@@ -1,564 +1,447 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>NX Coin</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>NX Coin</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 
-  <style>
-    *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-    html,body{margin:0;padding:0;min-height:100%;width:100%;background:#080b12;color:#f5f7fb;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
-    body{overflow-x:hidden}
-    .app{width:100%;max-width:520px;min-height:100vh;margin:0 auto;padding:18px 16px 105px}
-    .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:23px}
-    .brand{display:flex;align-items:center;gap:11px}
-    .brand-logo{width:43px;height:43px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#7657ff,#397cf5);box-shadow:0 8px 28px rgba(87,77,255,.27);font-size:21px;font-weight:900}
-    .brand-text h1{margin:0;font-size:18px;font-weight:850}
-    .brand-text p{margin:2px 0 0;color:#788294;font-size:11px}
-    .avatar{width:43px;height:43px;border-radius:50%;background:#151a26;border:1px solid #282f3e;display:flex;align-items:center;justify-content:center;color:#bbc4d5;font-weight:800}
-    .balance-card{position:relative;overflow:hidden;padding:23px;border-radius:24px;background:radial-gradient(circle at 90% 10%,rgba(99,102,241,.22),transparent 38%),linear-gradient(145deg,#141927,#0e121c);border:1px solid #252c3d;margin-bottom:15px}
-    .balance-label{color:#8992a5;font-size:12px;font-weight:600;margin-bottom:8px}
-    .balance-row{display:flex;align-items:baseline;gap:8px}
-    .balance{font-size:35px;line-height:1;font-weight:900;letter-spacing:-1px}
-    .coin-name{color:#8f98aa;font-size:13px;font-weight:700}
-    .balance-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:19px;color:#7e8799;font-size:10px;gap:10px}
-    .status{display:flex;align-items:center;gap:6px;white-space:nowrap}
-    .status-dot{width:7px;height:7px;border-radius:50%;background:#39d98a;box-shadow:0 0 10px rgba(57,217,138,.7)}
-    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:23px}
-    .stat{padding:15px 12px;border-radius:17px;background:#10141e;border:1px solid #202635}
-    .stat-value{font-size:17px;font-weight:850;margin-bottom:5px}
-    .stat-label{color:#747e91;font-size:10px;font-weight:600}
-    .section-head{display:flex;align-items:center;justify-content:space-between;margin:0 2px 12px}
-    .section-head h2{margin:0;font-size:17px;font-weight:850}
-    .section-head span{color:#6e7789;font-size:11px}
-    .feature{padding:18px;border-radius:20px;background:#111620;border:1px solid #222938;margin-bottom:12px}
-    .feature-top{display:flex;align-items:center;gap:13px;margin-bottom:14px}
-    .feature-icon{width:43px;height:43px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:#1a2030;font-size:20px}
-    .feature-title{font-size:14px;font-weight:800}
-    .feature-description{color:#80899a;font-size:11px;line-height:1.5;margin-top:3px}
-    .primary-btn{width:100%;min-height:46px;border-radius:14px;color:white;font-weight:800;font-size:13px;background:linear-gradient(135deg,#7158ff,#397cf6);box-shadow:0 8px 22px rgba(76,91,246,.2);transition:transform .15s ease}
-    .primary-btn:active{transform:scale(.98)}
-    .task-list{display:flex;flex-direction:column;gap:10px}
-    .task{display:flex;align-items:center;gap:12px;padding:14px;border-radius:18px;background:#10141e;border:1px solid #202735}
-    .task-icon{width:42px;height:42px;flex:0 0 42px;border-radius:13px;background:#191f2c;display:flex;align-items:center;justify-content:center;font-size:18px}
-    .task-info{min-width:0;flex:1}
-    .task-title{font-size:12px;font-weight:800}
-    .task-reward{margin-top:4px;color:#8c95a7;font-size:10px}
-    .task-btn{min-width:88px;height:35px;padding:0 10px;border-radius:10px;background:#191f2d;color:#cbd3e2;border:1px solid #2a3242;font-size:10px;font-weight:800}
-    .referral-card{padding:19px;border-radius:20px;background:linear-gradient(145deg,#131824,#0e121b);border:1px solid #232a39;margin-top:14px}
-    .referral-title{font-size:15px;font-weight:850;margin-bottom:5px}
-    .referral-text{color:#7e8799;font-size:11px;line-height:1.5;margin-bottom:15px}
-    .referral-box{display:flex;gap:8px}
-    .referral-input{flex:1;min-width:0;height:43px;border-radius:12px;border:1px solid #293141;background:#0a0e15;color:#adb6c8;padding:0 12px;font-size:10px;outline:none}
-    .copy-btn{width:78px;border-radius:12px;background:#1b2230;border:1px solid #2a3344;color:#dce2ed;font-size:11px;font-weight:800}
-    .wallet-card{padding:19px;border-radius:22px;background:linear-gradient(145deg,#121722,#0e121b);border:1px solid #252d3d}
-    .wallet-header{display:flex;align-items:center;gap:12px;margin-bottom:18px}
-    .wallet-icon{width:44px;height:44px;border-radius:13px;background:#1a2030;display:flex;align-items:center;justify-content:center;font-size:20px}
-    .wallet-title{font-size:15px;font-weight:850}
-    .wallet-subtitle{color:#7d8799;font-size:10px;margin-top:3px}
-    .network-box{display:flex;align-items:center;justify-content:space-between;padding:13px;margin-bottom:16px;border-radius:13px;background:#0b0f17;border:1px solid #252d3d}
-    .network-left{display:flex;align-items:center;gap:9px}
-    .network-dot{width:9px;height:9px;border-radius:50%;background:#f0b90b;box-shadow:0 0 8px rgba(240,185,11,.45)}
-    .network-name{font-size:11px;font-weight:800}
-    .network-tag{font-size:9px;color:#7f899b;background:#171d29;border:1px solid #283142;padding:5px 8px;border-radius:7px}
-    .input-group{margin-bottom:14px}
-    .input-label{display:block;color:#858ea0;font-size:10px;font-weight:700;margin-bottom:7px}
-    .wallet-input{width:100%;height:47px;border-radius:13px;background:#0a0e15;border:1px solid #293141;outline:none;color:#eef1f7;padding:0 13px;font-size:12px}
-    .wallet-input:focus{border-color:#5968e8}
-    .available-row{display:flex;justify-content:space-between;align-items:center;margin:2px 0 15px;padding:11px 12px;border-radius:11px;background:#151b27}
-    .available-label{color:#7e8799;font-size:10px}
-    .available-value{font-size:11px;font-weight:800}
-    .min-info{padding:12px;border-radius:12px;background:#151b27;border:1px solid #202a39;color:#7e8799;font-size:10px;line-height:1.55;margin-bottom:14px}
-    .min-info strong{color:#cdd4e1}
-    .withdraw-btn{width:100%;min-height:48px;border-radius:14px;color:white;font-weight:850;font-size:13px;background:linear-gradient(135deg,#7158ff,#397cf6);box-shadow:0 8px 22px rgba(76,91,246,.2)}
-    .history-list{display:flex;flex-direction:column;gap:9px}
-    .history-item{display:flex;align-items:center;gap:11px;padding:13px;border-radius:16px;background:#10141e;border:1px solid #202735}
-    .history-icon{width:38px;height:38px;border-radius:11px;background:#181e2b;display:flex;align-items:center;justify-content:center;font-size:16px}
-    .history-info{flex:1;min-width:0}
-    .history-amount{font-size:12px;font-weight:800}
-    .history-date{margin-top:3px;color:#6f788a;font-size:9px}
-    .history-status{padding:5px 8px;border-radius:7px;font-size:9px;font-weight:800}
-    .status-pending{background:#272216;color:#e5bd62}
-    .status-paid{background:#13261e;color:#62d49b}
-    .status-failed{background:#2a191b;color:#e2767d}
-    .empty{padding:28px 15px;text-align:center;color:#6f788a;font-size:11px;background:#10141e;border:1px solid #202735;border-radius:18px}
-    .page{display:none}
-    .page.active{display:block}
-    .bottom-nav{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);width:calc(100% - 26px);max-width:494px;padding:8px;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;border-radius:20px;background:rgba(16,20,29,.95);border:1px solid #252c3a;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);z-index:50}
-    .nav-btn{min-height:53px;border-radius:14px;background:transparent;color:#70798c;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:9px;font-weight:750}
-    .nav-icon{font-size:17px;line-height:1}
-    .nav-btn.active{background:#1a2030;color:#dce2ef}
-    .modal-overlay{position:fixed;inset:0;z-index:200;display:none;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.58);padding:12px}
-    .modal-overlay.show{display:flex}
-    .modal{width:100%;max-width:500px;border-radius:23px;background:#111620;border:1px solid #293141;padding:20px;box-shadow:0 -10px 50px rgba(0,0,0,.35)}
-    .modal-title{font-size:17px;font-weight:850;margin-bottom:6px}
-    .modal-subtitle{color:#7d8798;font-size:10px;line-height:1.5;margin-bottom:17px}
-    .confirm-box{padding:14px;border-radius:14px;background:#0b0f17;border:1px solid #252d3d;margin-bottom:14px}
-    .confirm-row{display:flex;justify-content:space-between;gap:15px;margin-bottom:10px}
-    .confirm-row:last-child{margin-bottom:0}
-    .confirm-label{color:#727c8f;font-size:10px}
-    .confirm-value{color:#e5e9f1;font-size:10px;font-weight:750;text-align:right;max-width:65%;overflow-wrap:anywhere}
-    .modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-    .cancel-btn{min-height:46px;border-radius:13px;background:#1a202c;border:1px solid #293242;color:#c8d0de;font-size:12px;font-weight:800}
-    .toast{position:fixed;left:50%;bottom:88px;transform:translateX(-50%) translateY(20px);width:calc(100% - 40px);max-width:450px;padding:13px 15px;border-radius:13px;background:#1b2230;border:1px solid #30394c;color:#e5e9f1;text-align:center;font-size:11px;font-weight:650;opacity:0;pointer-events:none;transition:all .25s ease;z-index:300}
-    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-    @media(max-width:360px){
-      .app{padding-left:12px;padding-right:12px}
-      .balance{font-size:31px}
-      .stats{gap:7px}
-      .stat{padding:13px 9px}
-      .task{padding:12px}
-      .task-btn{min-width:82px;padding:0 7px}
-    }
-  </style>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;min-height:100%;width:100%;background:#080b12;color:#f5f7fb;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+body{overflow-x:hidden}
+button,input{font:inherit}
+.app{width:100%;max-width:520px;min-height:100vh;margin:auto;padding:18px 16px 105px}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:23px}
+.brand{display:flex;align-items:center;gap:11px}
+.brand-logo{width:43px;height:43px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#7657ff,#397cf5);box-shadow:0 8px 28px rgba(87,77,255,.27);font-size:21px;font-weight:900}
+.brand-text h1{margin:0;font-size:18px;font-weight:850}
+.brand-text p{margin:2px 0 0;color:#788294;font-size:11px}
+.avatar{width:43px;height:43px;border-radius:50%;background:#151a26;border:1px solid #282f3e;display:flex;align-items:center;justify-content:center;color:#bbc4d5;font-weight:800}
+.balance-card{position:relative;overflow:hidden;padding:23px;border-radius:24px;background:radial-gradient(circle at 90% 10%,rgba(99,102,241,.22),transparent 38%),linear-gradient(145deg,#141927,#0e121c);border:1px solid #252c3d;margin-bottom:15px}
+.balance-label{color:#8992a5;font-size:12px;font-weight:600;margin-bottom:8px}
+.balance-row{display:flex;align-items:baseline;gap:8px}
+.balance{font-size:35px;line-height:1;font-weight:900;letter-spacing:-1px}
+.coin-name{color:#8f98aa;font-size:13px;font-weight:700}
+.balance-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:19px;color:#7e8799;font-size:10px;gap:10px}
+.status{display:flex;align-items:center;gap:6px;white-space:nowrap}
+.status-dot{width:7px;height:7px;border-radius:50%;background:#39d98a;box-shadow:0 0 10px rgba(57,217,138,.7)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:23px}
+.stat{padding:15px 12px;border-radius:17px;background:#10141e;border:1px solid #202635}
+.stat-value{font-size:17px;font-weight:850;margin-bottom:5px}
+.stat-label{color:#747e91;font-size:10px;font-weight:600}
+.section-head{display:flex;align-items:center;justify-content:space-between;margin:0 2px 12px}
+.section-head h2{margin:0;font-size:17px;font-weight:850}
+.section-head span{color:#6e7789;font-size:11px}
+.feature{padding:18px;border-radius:20px;background:#111620;border:1px solid #222938;margin-bottom:12px}
+.feature-top{display:flex;align-items:center;gap:13px;margin-bottom:14px}
+.feature-icon{width:43px;height:43px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:#1a2030;font-size:20px}
+.feature-title{font-size:14px;font-weight:800}
+.feature-description{color:#80899a;font-size:11px;line-height:1.5;margin-top:3px}
+.primary-btn{width:100%;min-height:46px;border:0;border-radius:14px;color:white;font-weight:800;font-size:13px;background:linear-gradient(135deg,#7158ff,#397cf6);box-shadow:0 8px 22px rgba(76,91,246,.2)}
+.task-list{display:flex;flex-direction:column;gap:10px}
+.task{display:flex;align-items:center;gap:12px;padding:14px;border-radius:18px;background:#10141e;border:1px solid #202735}
+.task-icon{width:42px;height:42px;flex:0 0 42px;border-radius:13px;background:#191f2c;display:flex;align-items:center;justify-content:center;font-size:18px}
+.task-info{min-width:0;flex:1}
+.task-title{font-size:12px;font-weight:800}
+.task-reward{margin-top:4px;color:#8c95a7;font-size:10px}
+.task-btn{min-width:96px;height:35px;padding:0 10px;border-radius:10px;background:#191f2d;color:#cbd3e2;border:1px solid #2a3242;font-size:10px;font-weight:800}
+.task-btn.primary{background:linear-gradient(135deg,#7158ff,#397cf6);border-color:transparent;color:#fff}
+.task-btn.success{background:#13261e;border-color:#24583f;color:#62d49b}
+.task-btn:disabled{opacity:.6}
+.referral-card,.wallet-card{padding:19px;border-radius:20px;background:linear-gradient(145deg,#131824,#0e121b);border:1px solid #232a39;margin-top:14px}
+.referral-title{font-size:15px;font-weight:850;margin-bottom:5px}
+.referral-text{color:#7e8799;font-size:11px;line-height:1.5;margin-bottom:15px}
+.referral-box{display:flex;gap:8px}
+.referral-input{flex:1;min-width:0;height:43px;border-radius:12px;border:1px solid #293141;background:#0a0e15;color:#adb6c8;padding:0 12px;font-size:10px;outline:none}
+.copy-btn{width:78px;border-radius:12px;background:#1b2230;border:1px solid #2a3344;color:#dce2ed;font-size:11px;font-weight:800}
+.wallet-header{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.wallet-icon{width:44px;height:44px;border-radius:13px;background:#1a2030;display:flex;align-items:center;justify-content:center;font-size:20px}
+.wallet-title{font-size:15px;font-weight:850}
+.wallet-subtitle{color:#7d8799;font-size:10px;margin-top:3px}
+.network-box{display:flex;align-items:center;justify-content:space-between;padding:13px;margin-bottom:16px;border-radius:13px;background:#0b0f17;border:1px solid #252d3d}
+.network-left{display:flex;align-items:center;gap:9px}
+.network-dot{width:9px;height:9px;border-radius:50%;background:#f0b90b}
+.network-name{font-size:11px;font-weight:800}
+.network-tag{font-size:9px;color:#7f899b;background:#171d29;border:1px solid #283142;padding:5px 8px;border-radius:7px}
+.input-group{margin-bottom:14px}
+.input-label{display:block;color:#858ea0;font-size:10px;font-weight:700;margin-bottom:7px}
+.wallet-input{width:100%;height:47px;border-radius:13px;background:#0a0e15;border:1px solid #293141;outline:none;color:#eef1f7;padding:0 13px;font-size:12px}
+.available-row{display:flex;justify-content:space-between;padding:11px 12px;border-radius:11px;background:#151b27;margin-bottom:15px}
+.available-label{color:#7e8799;font-size:10px}
+.available-value{font-size:11px;font-weight:800}
+.min-info{padding:12px;border-radius:12px;background:#151b27;border:1px solid #202a39;color:#7e8799;font-size:10px;line-height:1.55;margin-bottom:14px}
+.min-info strong{color:#cdd4e1}
+.withdraw-btn{width:100%;min-height:48px;border:0;border-radius:14px;color:white;font-weight:850;font-size:13px;background:linear-gradient(135deg,#7158ff,#397cf6)}
+.history-list{display:flex;flex-direction:column;gap:9px}
+.history-item{display:flex;align-items:center;gap:11px;padding:13px;border-radius:16px;background:#10141e;border:1px solid #202735}
+.history-icon{width:38px;height:38px;border-radius:11px;background:#181e2b;display:flex;align-items:center;justify-content:center}
+.history-info{flex:1;min-width:0}
+.history-amount{font-size:12px;font-weight:800}
+.history-date{margin-top:3px;color:#6f788a;font-size:9px}
+.history-status{padding:5px 8px;border-radius:7px;font-size:9px;font-weight:800}
+.status-pending,.status-processing{background:#272216;color:#e5bd62}
+.status-paid{background:#13261e;color:#62d49b}
+.status-failed{background:#2a191b;color:#e2767d}
+.empty{padding:28px 15px;text-align:center;color:#6f788a;font-size:11px;background:#10141e;border:1px solid #202735;border-radius:18px}
+.page{display:none}
+.page.active{display:block}
+.bottom-nav{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);width:calc(100% - 26px);max-width:494px;padding:8px;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;border-radius:20px;background:rgba(16,20,29,.95);border:1px solid #252c3a;backdrop-filter:blur(18px);z-index:50}
+.nav-btn{min-height:53px;border:0;border-radius:14px;background:transparent;color:#70798c;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:9px;font-weight:750}
+.nav-icon{font-size:17px;line-height:1}
+.nav-btn.active{background:#1a2030;color:#dce2ef}
+.modal-overlay{position:fixed;inset:0;z-index:200;display:none;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.58);padding:12px}
+.modal-overlay.show{display:flex}
+.modal{width:100%;max-width:500px;border-radius:23px;background:#111620;border:1px solid #293141;padding:20px}
+.modal-title{font-size:17px;font-weight:850;margin-bottom:6px}
+.modal-subtitle{color:#7d8798;font-size:10px;line-height:1.5;margin-bottom:17px}
+.confirm-box{padding:14px;border-radius:14px;background:#0b0f17;border:1px solid #252d3d;margin-bottom:14px}
+.confirm-row{display:flex;justify-content:space-between;gap:15px;margin-bottom:10px}
+.confirm-row:last-child{margin-bottom:0}
+.confirm-label{color:#727c8f;font-size:10px}
+.confirm-value{color:#e5e9f1;font-size:10px;font-weight:750;text-align:right;max-width:65%;overflow-wrap:anywhere}
+.modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.cancel-btn{min-height:46px;border-radius:13px;background:#1a202c;border:1px solid #293242;color:#c8d0de;font-size:12px;font-weight:800}
+.toast{position:fixed;left:50%;bottom:88px;transform:translateX(-50%) translateY(20px);width:calc(100% - 40px);max-width:450px;padding:13px 15px;border-radius:13px;background:#1b2230;border:1px solid #30394c;color:#e5e9f1;text-align:center;font-size:11px;font-weight:650;opacity:0;pointer-events:none;transition:.25s;z-index:300}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(max-width:360px){.app{padding-left:12px;padding-right:12px}.balance{font-size:31px}.task{padding:12px}.task-btn{min-width:82px;padding:0 7px}}
+</style>
 </head>
 
 <body>
 
 <div class="app">
 
-  <header class="topbar">
-    <div class="brand">
-      <div class="brand-logo">N</div>
-      <div class="brand-text">
-        <h1 id="appName">NX Coin</h1>
-        <p>Earn. Collect. Grow.</p>
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-logo">N</div>
+    <div class="brand-text">
+      <h1 id="appName">NX Coin</h1>
+      <p>Earn. Collect. Grow.</p>
+    </div>
+  </div>
+  <div class="avatar" id="avatar">N</div>
+</header>
+
+<main id="homePage" class="page active">
+
+<section class="balance-card">
+  <div class="balance-label">Available Balance</div>
+
+  <div class="balance-row">
+    <div class="balance" id="balance">0</div>
+    <div class="coin-name">NX Coins</div>
+  </div>
+
+  <div class="balance-bottom">
+    <div class="status">
+      <span class="status-dot"></span>
+      Account active
+    </div>
+    <div>Keep earning to grow</div>
+  </div>
+</section>
+
+<section class="stats">
+  <div class="stat">
+    <div class="stat-value" id="totalEarned">0</div>
+    <div class="stat-label">Balance</div>
+  </div>
+
+  <div class="stat">
+    <div class="stat-value" id="referrals">0</div>
+    <div class="stat-label">Referrals</div>
+  </div>
+
+  <div class="stat">
+    <div class="stat-value" id="cooldownText">24h</div>
+    <div class="stat-label">Cooldown</div>
+  </div>
+</section>
+
+<div class="section-head">
+  <h2>Start Earning</h2>
+  <span>Rewards</span>
+</div>
+
+<section class="feature">
+  <div class="feature-top">
+    <div class="feature-icon">⚡</div>
+    <div>
+      <div class="feature-title">Complete Tasks</div>
+      <div class="feature-description">
+        Complete available tasks and collect NX Coins.
       </div>
     </div>
-    <div class="avatar" id="avatar">N</div>
-  </header>
+  </div>
 
-  <main id="homePage" class="page active">
+  <button class="primary-btn" onclick="openPage('earn')">
+    View Tasks
+  </button>
+</section>
 
-    <section class="balance-card">
-      <div class="balance-label">Available Balance</div>
+<section class="referral-card">
+  <div class="referral-title">Invite Friends</div>
 
-      <div class="balance-row">
-        <div class="balance" id="balance">500</div>
-        <div class="coin-name">NX Coins</div>
-      </div>
+  <div class="referral-text">
+    Share your referral link and earn 100 NX Coins when friends join.
+  </div>
 
-      <div class="balance-bottom">
-        <div class="status">
-          <span class="status-dot"></span>
-          Account active
-        </div>
-        <div>Keep earning to grow your balance</div>
-      </div>
-    </section>
+  <div class="referral-box">
+    <input class="referral-input" id="referralInput" readonly>
+    <button class="copy-btn" onclick="copyReferral()">Copy</button>
+  </div>
+</section>
 
-    <section class="stats">
+</main>
 
-      <div class="stat">
-        <div class="stat-value" id="totalEarned">500</div>
-        <div class="stat-label">Total Earned</div>
-      </div>
 
-      <div class="stat">
-        <div class="stat-value" id="referrals">0</div>
-        <div class="stat-label">Referrals</div>
-      </div>
+<main id="earnPage" class="page">
 
-      <div class="stat">
-        <div class="stat-value" id="cooldownText">24h</div>
-        <div class="stat-label">Task Cooldown</div>
-      </div>
+<div class="section-head">
+  <h2>Tasks</h2>
+  <span>Earn rewards</span>
+</div>
 
-    </section>
+<div class="task-list" id="taskList">
+  <div class="empty">Loading tasks...</div>
+</div>
 
-    <div class="section-head">
-      <h2>Start Earning</h2>
-      <span>Daily rewards</span>
+</main>
+
+
+<main id="referralPage" class="page">
+
+<div class="section-head">
+  <h2>Referrals</h2>
+  <span>Grow together</span>
+</div>
+
+<section class="feature">
+
+<div class="feature-top">
+  <div class="feature-icon">👥</div>
+
+  <div>
+    <div class="feature-title">Invite Friends</div>
+    <div class="feature-description">
+      Invite friends using your personal referral link and earn 100 NX Coins.
     </div>
+  </div>
+</div>
 
-    <section class="feature">
+<button class="primary-btn" onclick="shareReferral()">
+  Share Referral Link
+</button>
 
-      <div class="feature-top">
+</section>
 
-        <div class="feature-icon">⚡</div>
+<section class="referral-card">
 
-        <div>
-          <div class="feature-title">Complete Tasks</div>
-          <div class="feature-description">
-            Complete available tasks and collect NX Coins.
-          </div>
-        </div>
+<div class="referral-title">Your Referral Link</div>
 
-      </div>
+<div class="referral-text">
+  Copy your link and share it with your friends.
+</div>
 
-      <button class="primary-btn" type="button" onclick="openPage('earn')">
-        View Tasks
-      </button>
+<div class="referral-box">
+  <input class="referral-input" id="referralInput2" readonly>
+  <button class="copy-btn" onclick="copyReferral()">Copy</button>
+</div>
 
-    </section>
+</section>
 
-    <section class="referral-card">
+<section class="stats" style="margin-top:14px">
 
-      <div class="referral-title">Invite Friends</div>
+<div class="stat">
+  <div class="stat-value" id="referralCount">0</div>
+  <div class="stat-label">Friends Joined</div>
+</div>
 
-      <div class="referral-text">
-        Share your referral link and earn extra NX Coins when friends join.
-      </div>
+<div class="stat">
+  <div class="stat-value">100</div>
+  <div class="stat-label">Reward / Friend</div>
+</div>
 
-      <div class="referral-box">
+<div class="stat">
+  <div class="stat-value" id="referralEarned">0</div>
+  <div class="stat-label">Earned</div>
+</div>
 
-        <input
-          class="referral-input"
-          id="referralInput"
-          readonly
-          value="Loading referral link..."
-        />
+</section>
 
-        <button class="copy-btn" type="button" onclick="copyReferral()">
-          Copy
-        </button>
+</main>
 
-      </div>
 
-    </section>
+<main id="walletPage" class="page">
 
-  </main>
+<div class="section-head">
+  <h2>Withdraw</h2>
+  <span>NX Coins</span>
+</div>
 
-  <main id="earnPage" class="page">
+<section class="wallet-card">
 
-    <div class="section-head">
-      <h2>Tasks</h2>
-      <span>Earn rewards</span>
+<div class="wallet-header">
+  <div class="wallet-icon">◈</div>
+
+  <div>
+    <div class="wallet-title">Withdraw NX Coins</div>
+    <div class="wallet-subtitle">
+      Send your withdrawal to your BSC wallet
     </div>
+  </div>
+</div>
 
-    <div class="task-list" id="taskList"></div>
+<div class="network-box">
+  <div class="network-left">
+    <span class="network-dot"></span>
+    <div class="network-name">BNB Smart Chain</div>
+  </div>
 
-  </main>
+  <div class="network-tag">BSC</div>
+</div>
 
-  <main id="referralPage" class="page">
+<div class="input-group">
+<label class="input-label">Wallet Address</label>
 
-    <div class="section-head">
-      <h2>Referrals</h2>
-      <span>Grow together</span>
-    </div>
+<input
+  id="walletAddress"
+  class="wallet-input"
+  type="text"
+  inputmode="text"
+  autocomplete="off"
+  autocapitalize="off"
+  spellcheck="false"
+  placeholder="0x..."
+>
+</div>
 
-    <section class="feature">
+<div class="available-row">
+  <div class="available-label">Available</div>
+  <div class="available-value" id="availableBalance">0 NX Coins</div>
+</div>
 
-      <div class="feature-top">
+<div class="input-group">
+<label class="input-label">Withdrawal Amount</label>
 
-        <div class="feature-icon">👥</div>
+<input
+  id="withdrawAmount"
+  class="wallet-input"
+  type="number"
+  inputmode="numeric"
+  min="500"
+  step="1"
+  placeholder="Enter NX Coins"
+>
+</div>
 
-        <div>
-          <div class="feature-title">Invite Friends</div>
+<div class="min-info">
+Minimum withdrawal:
+<strong id="minimumText">500 NX Coins</strong>
 
-          <div class="feature-description">
-            Invite friends using your personal referral link and receive referral rewards when they join.
-          </div>
-        </div>
+<br>
 
-      </div>
+Enter the correct BSC wallet address. Withdrawals cannot be reversed after processing.
+</div>
 
-      <button class="primary-btn" type="button" onclick="shareReferral()">
-        Share Referral Link
-      </button>
+<button class="withdraw-btn" onclick="requestWithdrawal()">
+Continue
+</button>
 
-    </section>
+</section>
 
-    <section class="referral-card">
+<div class="section-head" style="margin-top:25px">
+<h2>Withdrawal History</h2>
+<span>Recent</span>
+</div>
 
-      <div class="referral-title">Your Referral Link</div>
+<div id="historyList" class="history-list">
+<div class="empty">No withdrawals yet.</div>
+</div>
 
-      <div class="referral-text">
-        Copy your link and share it with your friends.
-      </div>
-
-      <div class="referral-box">
-
-        <input
-          class="referral-input"
-          id="referralInput2"
-          readonly
-          value="Loading referral link..."
-        />
-
-        <button class="copy-btn" type="button" onclick="copyReferral()">
-          Copy
-        </button>
-
-      </div>
-
-    </section>
-
-    <section class="stats" style="margin-top:14px;">
-
-      <div class="stat">
-        <div class="stat-value" id="referralCount">0</div>
-        <div class="stat-label">Friends Joined</div>
-      </div>
-
-      <div class="stat">
-        <div class="stat-value" id="referralRewardValue">100</div>
-        <div class="stat-label">Reward / Friend</div>
-      </div>
-
-      <div class="stat">
-        <div class="stat-value" id="referralEarned">0</div>
-        <div class="stat-label">Referral Earned</div>
-      </div>
-
-    </section>
-
-  </main>
-
-  <main id="walletPage" class="page">
-
-    <div class="section-head">
-      <h2>Withdraw</h2>
-      <span>NX Coins</span>
-    </div>
-
-    <section class="wallet-card">
-
-      <div class="wallet-header">
-
-        <div class="wallet-icon">◈</div>
-
-        <div>
-          <div class="wallet-title">Withdraw NX Coins</div>
-
-          <div class="wallet-subtitle">
-            Send your withdrawal to your BSC wallet
-          </div>
-        </div>
-
-      </div>
-
-      <div class="network-box">
-
-        <div class="network-left">
-          <span class="network-dot"></span>
-
-          <div class="network-name">
-            BNB Smart Chain
-          </div>
-        </div>
-
-        <div class="network-tag">
-          BSC
-        </div>
-
-      </div>
-
-      <div class="input-group">
-
-        <label class="input-label" for="walletAddress">
-          Wallet Address
-        </label>
-
-        <input
-          id="walletAddress"
-          class="wallet-input"
-          type="text"
-          inputmode="text"
-          autocomplete="off"
-          autocapitalize="off"
-          spellcheck="false"
-          placeholder="0x..."
-        />
-
-      </div>
-
-      <div class="available-row">
-
-        <div class="available-label">
-          Available
-        </div>
-
-        <div class="available-value" id="availableBalance">
-          500 NX Coins
-        </div>
-
-      </div>
-
-      <div class="input-group">
-
-        <label class="input-label" for="withdrawAmount">
-          Withdrawal Amount
-        </label>
-
-        <input
-          id="withdrawAmount"
-          class="wallet-input"
-          type="number"
-          inputmode="numeric"
-          min="500"
-          step="1"
-          placeholder="Enter NX Coins"
-        />
-
-      </div>
-
-      <div class="min-info">
-
-        Minimum withdrawal:
-        <strong id="minimumText">500 NX Coins</strong>
-
-        <br />
-
-        Enter the correct BSC wallet address. Withdrawals cannot be reversed after processing.
-
-      </div>
-
-      <button
-        class="withdraw-btn"
-        type="button"
-        onclick="requestWithdrawal()"
-      >
-        Continue
-      </button>
-
-    </section>
-
-    <div class="section-head" style="margin-top:25px;">
-      <h2>Withdrawal History</h2>
-      <span>Recent</span>
-    </div>
-
-    <div id="historyList" class="history-list">
-
-      <div class="empty">
-        No withdrawals yet.
-      </div>
-
-    </div>
-
-  </main>
+</main>
 
 </div>
+
 
 <nav class="bottom-nav">
 
-  <button
-    class="nav-btn active"
-    id="navHome"
-    type="button"
-    onclick="openPage('home')"
-  >
-    <span class="nav-icon">⌂</span>
-    Home
-  </button>
+<button class="nav-btn active" id="navHome" onclick="openPage('home')">
+<span class="nav-icon">⌂</span>
+Home
+</button>
 
-  <button
-    class="nav-btn"
-    id="navEarn"
-    type="button"
-    onclick="openPage('earn')"
-  >
-    <span class="nav-icon">⚡</span>
-    Earn
-  </button>
+<button class="nav-btn" id="navEarn" onclick="openPage('earn')">
+<span class="nav-icon">⚡</span>
+Earn
+</button>
 
-  <button
-    class="nav-btn"
-    id="navReferral"
-    type="button"
-    onclick="openPage('referral')"
-  >
-    <span class="nav-icon">👥</span>
-    Refer
-  </button>
+<button class="nav-btn" id="navReferral" onclick="openPage('referral')">
+<span class="nav-icon">👥</span>
+Refer
+</button>
 
-  <button
-    class="nav-btn"
-    id="navWallet"
-    type="button"
-    onclick="openPage('wallet')"
-  >
-    <span class="nav-icon">◈</span>
-    Withdraw
-  </button>
+<button class="nav-btn" id="navWallet" onclick="openPage('wallet')">
+<span class="nav-icon">◈</span>
+Withdraw
+</button>
 
 </nav>
 
+
 <div class="modal-overlay" id="confirmModal">
 
-  <div class="modal">
+<div class="modal">
 
-    <div class="modal-title">
-      Confirm Withdrawal
-    </div>
+<div class="modal-title">Confirm Withdrawal</div>
 
-    <div class="modal-subtitle">
-      Please check the details carefully before submitting your withdrawal.
-    </div>
+<div class="modal-subtitle">
+Please check the details carefully before submitting.
+</div>
 
-    <div class="confirm-box">
+<div class="confirm-box">
 
-      <div class="confirm-row">
+<div class="confirm-row">
+<div class="confirm-label">Network</div>
+<div class="confirm-value">BNB Smart Chain</div>
+</div>
 
-        <div class="confirm-label">
-          Network
-        </div>
+<div class="confirm-row">
+<div class="confirm-label">Amount</div>
+<div class="confirm-value" id="confirmAmount">0 NX Coins</div>
+</div>
 
-        <div class="confirm-value">
-          BNB Smart Chain
-        </div>
-
-      </div>
-
-      <div class="confirm-row">
-
-        <div class="confirm-label">
-          Amount
-        </div>
-
-        <div class="confirm-value" id="confirmAmount">
-          0 NX Coins
-        </div>
-
-      </div>
-
-      <div class="confirm-row">
-
-        <div class="confirm-label">
-          Wallet
-        </div>
-
-        <div class="confirm-value" id="confirmWallet">
-          —
-        </div>
-
-      </div>
-
-    </div>
-
-    <div class="modal-actions">
-
-      <button
-        class="cancel-btn"
-        type="button"
-        onclick="closeWithdrawModal()"
-      >
-        Cancel
-      </button>
-
-      <button
-        class="primary-btn"
-        type="button"
-        onclick="submitWithdrawal()"
-      >
-        Confirm
-      </button>
-
-    </div>
-
-  </div>
+<div class="confirm-row">
+<div class="confirm-label">Wallet</div>
+<div class="confirm-value" id="confirmWallet">—</div>
+</div>
 
 </div>
 
-<div class="toast" id="toast" aria-live="polite"></div>
+<div class="modal-actions">
+
+<button class="cancel-btn" onclick="closeWithdrawModal()">
+Cancel
+</button>
+
+<button class="primary-btn" onclick="submitWithdrawal()">
+Confirm
+</button>
+
+</div>
+
+</div>
+</div>
+
+
+<div class="toast" id="toast"></div>
+
 
 <script>
 
 /* =========================================================
-   NX COIN - CENTRAL CONFIG / PATCH
-   Future changes mostly yahin se karne hain.
+   NX COIN CONFIG
 ========================================================= */
 
 const CONFIG = {
@@ -566,6 +449,9 @@ const CONFIG = {
   APP_NAME: "NX Coin",
 
   BOT_USERNAME: "NXCoinRobot",
+
+  API_BASE:
+    "https://usdtbot-production-89e9.up.railway.app",
 
   STARTING_BALANCE: 500,
 
@@ -575,34 +461,7 @@ const CONFIG = {
 
   MIN_WITHDRAWAL: 500,
 
-  TASK_COOLDOWN_HOURS: 24,
-
-  API_BASE: "",
-
-  TASKS: [
-
-    {
-      id: 1,
-      title: "Watch YouTube Video",
-      reward: 50,
-      url: "https://youtu.be/unTAEBvggus"
-    },
-
-    {
-      id: 2,
-      title: "Watch YouTube Video",
-      reward: 50,
-      url: "https://youtu.be/Hja_iwEkfmI"
-    },
-
-    {
-      id: 3,
-      title: "Watch YouTube Video",
-      reward: 50,
-      url: "https://youtu.be/I5mLBbsuAdA"
-    }
-
-  ]
+  TASK_COOLDOWN_HOURS: 24
 
 };
 
@@ -611,21 +470,21 @@ const CONFIG = {
    TELEGRAM
 ========================================================= */
 
-const tg = window.Telegram?.WebApp;
+const tg =
+  window.Telegram &&
+  window.Telegram.WebApp
+    ? window.Telegram.WebApp
+    : null;
 
 if (tg) {
 
   tg.ready();
-
   tg.expand();
 
   try {
-
     tg.setHeaderColor("#080b12");
-
     tg.setBackgroundColor("#080b12");
-
-  } catch (e) {}
+  } catch {}
 
 }
 
@@ -634,15 +493,25 @@ if (tg) {
    STATE
 ========================================================= */
 
-let appState = {
+let state = {
 
-  balance: CONFIG.STARTING_BALANCE,
+  balance: 0,
 
-  totalEarned: CONFIG.STARTING_BALANCE,
+  referrals: 0,
 
-  referrals: 0
+  referralReward: 0,
+
+  tasks: [],
+
+  payouts: [],
+
+  user: null
 
 };
+
+
+let openedTasks =
+  new Set();
 
 
 let pendingWithdrawal = {
@@ -655,94 +524,760 @@ let pendingWithdrawal = {
 
 
 /* =========================================================
-   CONFIG APPLY
+   TELEGRAM INIT DATA
 ========================================================= */
 
-function applyConfig() {
+function getInitData() {
 
-  document.getElementById("appName").textContent =
-    CONFIG.APP_NAME;
+  return tg?.initData || "";
 
-  document.getElementById("cooldownText").textContent =
-    CONFIG.TASK_COOLDOWN_HOURS + "h";
+}
 
-  document.getElementById("referralRewardValue").textContent =
-    CONFIG.REFERRAL_REWARD;
 
-  document.getElementById("minimumText").textContent =
-    CONFIG.MIN_WITHDRAWAL.toLocaleString() +
-    " NX Coins";
+function getTelegramUser() {
 
-  document.getElementById("withdrawAmount").min =
-    CONFIG.MIN_WITHDRAWAL;
+  return tg?.initDataUnsafe?.user || null;
 
 }
 
 
 /* =========================================================
-   TELEGRAM USER
+   API
 ========================================================= */
 
-function getTelegramUser() {
+async function api(
+  path,
+  options = {}
+) {
 
-  if (!tg || !tg.initDataUnsafe) {
+  const headers = {
 
-    return null;
+    "Content-Type":
+      "application/json",
+
+    "X-Telegram-Init-Data":
+      getInitData(),
+
+    ...(options.headers || {})
+
+  };
+
+
+  const response =
+    await fetch(
+      CONFIG.API_BASE + path,
+      {
+        ...options,
+        headers
+      }
+    );
+
+
+  let data = null;
+
+  try {
+
+    data =
+      await response.json();
+
+  } catch {
+
+    data = null;
 
   }
 
-  return tg.initDataUnsafe.user || null;
+
+  if (!response.ok) {
+
+    const error =
+      new Error(
+        data?.message ||
+        data?.error ||
+        data?.reason ||
+        "Request failed"
+      );
+
+    error.data = data;
+
+    throw error;
+
+  }
+
+
+  return data;
 
 }
 
 
-function setupTelegramUser() {
+/* =========================================================
+   SYNC
+========================================================= */
 
-  const user = getTelegramUser();
+async function sync() {
 
-  if (!user) {
+  try {
 
-    setAvatar("N");
+    const data =
+      await api(
+        "/sync",
+        {
+          method: "POST",
+          body: JSON.stringify({})
+        }
+      );
+
+
+    state.balance =
+      Number(data.balance || 0);
+
+
+    state.referrals =
+      Number(data.referrals || 0);
+
+
+    state.referralReward =
+      Number(
+        data.referralReward || 0
+      );
+
+
+    state.tasks =
+      Array.isArray(data.tasks)
+        ? data.tasks
+        : [];
+
+
+    state.payouts =
+      Array.isArray(data.payouts)
+        ? data.payouts
+        : [];
+
+
+    state.user =
+      data.user || null;
+
+
+    renderState();
+
+    renderTasks();
+
+    renderHistory();
+
+    buildReferralLink();
+
+
+  } catch (error) {
+
+    console.error(
+      "Sync error:",
+      error
+    );
+
+    showToast(
+      error.message ||
+      "Unable to load NX Coin."
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   RENDER STATE
+========================================================= */
+
+function renderState() {
+
+  const balance =
+    state.balance.toLocaleString();
+
+
+  document.getElementById(
+    "balance"
+  ).textContent =
+    balance;
+
+
+  document.getElementById(
+    "totalEarned"
+  ).textContent =
+    balance;
+
+
+  document.getElementById(
+    "referrals"
+  ).textContent =
+    state.referrals.toLocaleString();
+
+
+  document.getElementById(
+    "referralCount"
+  ).textContent =
+    state.referrals.toLocaleString();
+
+
+  document.getElementById(
+    "referralEarned"
+  ).textContent =
+    state.referralReward.toLocaleString();
+
+
+  document.getElementById(
+    "availableBalance"
+  ).textContent =
+    balance + " NX Coins";
+
+
+  document.getElementById(
+    "minimumText"
+  ).textContent =
+    CONFIG.MIN_WITHDRAWAL.toLocaleString() +
+    " NX Coins";
+
+
+  document.getElementById(
+    "cooldownText"
+  ).textContent =
+    CONFIG.TASK_COOLDOWN_HOURS +
+    "h";
+
+
+  const user =
+    getTelegramUser();
+
+
+  let initial = "N";
+
+
+  if (user) {
+
+    initial =
+      (
+        user.first_name ||
+        user.username ||
+        "N"
+      )
+      .charAt(0)
+      .toUpperCase();
+
+  }
+
+
+  document.getElementById(
+    "avatar"
+  ).textContent =
+    initial;
+
+}
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function openPage(page) {
+
+  const pages = [
+    "home",
+    "earn",
+    "referral",
+    "wallet"
+  ];
+
+
+  pages.forEach(name => {
+
+    const el =
+      document.getElementById(
+        name + "Page"
+      );
+
+    if (el) {
+
+      el.classList.toggle(
+        "active",
+        name === page
+      );
+
+    }
+
+  });
+
+
+  const navs = {
+    home: "navHome",
+    earn: "navEarn",
+    referral: "navReferral",
+    wallet: "navWallet"
+  };
+
+
+  Object.values(navs).forEach(id => {
+
+    document
+      .getElementById(id)
+      ?.classList.remove(
+        "active"
+      );
+
+  });
+
+
+  document
+    .getElementById(navs[page])
+    ?.classList.add(
+      "active"
+    );
+
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+
+
+  if (page === "earn") {
+
+    renderTasks();
+
+  }
+
+
+  if (page === "wallet") {
+
+    loadHistory();
+
+  }
+
+}
+
+
+/* =========================================================
+   TASK RENDER
+========================================================= */
+
+function renderTasks() {
+
+  const list =
+    document.getElementById(
+      "taskList"
+    );
+
+
+  if (!state.tasks.length) {
+
+    list.innerHTML =
+      `<div class="empty">No tasks available.</div>`;
 
     return;
 
   }
 
-  const firstName = user.first_name || "";
 
-  const lastName = user.last_name || "";
+  list.innerHTML =
+    state.tasks.map(task => {
 
-  let initials =
-    (
-      firstName.charAt(0) +
-      lastName.charAt(0)
-    ).toUpperCase();
+      const isTelegram =
+        task.type === "telegram";
 
-  if (!initials) {
 
-    initials =
-      (user.username || "N")
-        .charAt(0)
-        .toUpperCase();
+      const icon =
+        isTelegram
+          ? "📢"
+          : "▶️";
 
-  }
 
-  setAvatar(initials.substring(0, 2));
+      const isOpened =
+        openedTasks.has(
+          Number(task.id)
+        );
 
-  buildReferralLink(user.id);
+
+      return `
+
+        <div class="task">
+
+          <div class="task-icon">
+            ${icon}
+          </div>
+
+          <div class="task-info">
+
+            <div class="task-title">
+              ${escapeHtml(
+                task.title ||
+                "Task"
+              )}
+            </div>
+
+            <div class="task-reward">
+              +${Number(
+                task.reward || 50
+              ).toLocaleString()}
+              NX Coins
+            </div>
+
+          </div>
+
+          <button
+            class="task-btn ${isOpened ? "primary" : ""}"
+            id="taskBtn${Number(task.id)}"
+            onclick="taskAction(${Number(task.id)})"
+          >
+            ${
+              isOpened
+                ? "Claim 50 NX"
+                : (
+                    isTelegram
+                      ? "Join"
+                      : "Watch"
+                  )
+            }
+          </button>
+
+        </div>
+
+      `;
+
+    }).join("");
 
 }
 
 
-function setAvatar(text) {
+/* =========================================================
+   TASK ACTION
+========================================================= */
 
-  const avatar =
-    document.getElementById("avatar");
+function taskAction(taskId) {
 
-  if (avatar) {
+  const task =
+    state.tasks.find(
+      item =>
+        Number(item.id) ===
+        Number(taskId)
+    );
 
-    avatar.textContent =
-      text || "N";
+
+  if (!task) {
+
+    showToast(
+      "Task not found."
+    );
+
+    return;
+
+  }
+
+
+  if (
+    openedTasks.has(
+      Number(taskId)
+    )
+  ) {
+
+    claimTask(
+      Number(taskId)
+    );
+
+    return;
+
+  }
+
+
+  openedTasks.add(
+    Number(taskId)
+  );
+
+
+  if (
+    task.type ===
+    "telegram"
+  ) {
+
+    openTelegramTask(
+      task
+    );
+
+  } else {
+
+    openYoutubeTask(
+      task
+    );
+
+  }
+
+
+  renderTasks();
+
+
+  showToast(
+    "Complete the task, then tap Claim 50 NX."
+  );
+
+}
+
+
+/* =========================================================
+   OPEN YOUTUBE
+========================================================= */
+
+function openYoutubeTask(
+  task
+) {
+
+  if (!task.url) return;
+
+
+  if (
+    tg &&
+    typeof tg.openLink ===
+      "function"
+  ) {
+
+    tg.openLink(
+      task.url
+    );
+
+  } else {
+
+    window.open(
+      task.url,
+      "_blank"
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   OPEN TELEGRAM CHANNEL
+========================================================= */
+
+function openTelegramTask(
+  task
+) {
+
+  const url =
+    task.url ||
+    (
+      "https://t.me/" +
+      String(
+        task.channel ||
+        ""
+      ).replace(
+        "@",
+        ""
+      )
+    );
+
+
+  if (
+    tg &&
+    typeof tg.openTelegramLink ===
+      "function"
+  ) {
+
+    tg.openTelegramLink(
+      url
+    );
+
+  } else {
+
+    window.open(
+      url,
+      "_blank"
+    );
+
+  }
+
+}
+
+
+/* =========================================================
+   CLAIM TASK
+========================================================= */
+
+async function claimTask(
+  taskId
+) {
+
+  const button =
+    document.getElementById(
+      "taskBtn" +
+      Number(taskId)
+    );
+
+
+  if (button) {
+
+    button.disabled =
+      true;
+
+    button.textContent =
+      "Checking...";
+
+  }
+
+
+  try {
+
+    const result =
+      await api(
+        "/earn",
+        {
+          method: "POST",
+
+          body:
+            JSON.stringify({
+              taskId:
+                Number(taskId)
+            })
+        }
+      );
+
+
+    state.balance =
+      Number(
+        result.balance ||
+        state.balance
+      );
+
+
+    openedTasks.delete(
+      Number(taskId)
+    );
+
+
+    renderState();
+
+
+    if (button) {
+
+      button.disabled =
+        true;
+
+      button.textContent =
+        "Claimed ✓";
+
+      button.classList.add(
+        "success"
+      );
+
+    }
+
+
+    showToast(
+      "🎉 +" +
+      Number(
+        result.reward || 50
+      ) +
+      " NX Coins added!"
+    );
+
+
+    setTimeout(
+      sync,
+      500
+    );
+
+
+  } catch (error) {
+
+    console.error(
+      "Claim error:",
+      error
+    );
+
+
+    if (button) {
+
+      button.disabled =
+        false;
+
+      button.textContent =
+        "Claim 50 NX";
+
+    }
+
+
+    const data =
+      error.data || {};
+
+
+    if (
+      data.error ===
+      "CHANNEL_NOT_JOINED"
+    ) {
+
+      showToast(
+        "❌ Please join " +
+        (
+          data.channel ||
+          "the channel"
+        ) +
+        " first."
+      );
+
+      return;
+
+    }
+
+
+    if (
+      data.reason ===
+      "CHANNEL_NOT_JOINED"
+    ) {
+
+      showToast(
+        "❌ Please join the channel first."
+      );
+
+      return;
+
+    }
+
+
+    if (
+      data.reason ===
+      "COOLDOWN"
+    ) {
+
+      openedTasks.delete(
+        Number(taskId)
+      );
+
+      renderTasks();
+
+
+      showToast(
+        "⏳ This task can be claimed again after 24 hours."
+      );
+
+      return;
+
+    }
+
+
+    if (
+      data.reason ===
+      "ALREADY_CLAIMED"
+    ) {
+
+      showToast(
+        "This task has already been claimed."
+      );
+
+      return;
+
+    }
+
+
+    showToast(
+      error.message ||
+      "Unable to claim task."
+    );
 
   }
 
@@ -753,31 +1288,46 @@ function setAvatar(text) {
    REFERRAL
 ========================================================= */
 
-function buildReferralLink(userId) {
+function buildReferralLink() {
 
-  if (!userId) return;
+  const user =
+    getTelegramUser();
+
+
+  if (!user?.id) return;
+
 
   const link =
     "https://t.me/" +
     CONFIG.BOT_USERNAME +
     "?start=ref_" +
-    userId;
+    user.id;
 
-  const input1 =
-    document.getElementById("referralInput");
 
-  const input2 =
-    document.getElementById("referralInput2");
+  const a =
+    document.getElementById(
+      "referralInput"
+    );
 
-  if (input1) {
 
-    input1.value = link;
+  const b =
+    document.getElementById(
+      "referralInput2"
+    );
+
+
+  if (a) {
+
+    a.value =
+      link;
 
   }
 
-  if (input2) {
 
-    input2.value = link;
+  if (b) {
+
+    b.value =
+      link;
 
   }
 
@@ -787,34 +1337,42 @@ function buildReferralLink(userId) {
 async function copyReferral() {
 
   const input =
-    document.getElementById("referralInput");
+    document.getElementById(
+      "referralInput"
+    );
 
-  if (!input) return;
+
+  if (!input?.value) {
+
+    showToast(
+      "Referral link not ready."
+    );
+
+    return;
+
+  }
+
 
   try {
 
-    if (navigator.clipboard) {
+    await navigator.clipboard.writeText(
+      input.value
+    );
 
-      await navigator.clipboard.writeText(
-        input.value
-      );
+    showToast(
+      "Referral link copied."
+    );
 
-    } else {
-
-      input.select();
-
-      document.execCommand("copy");
-
-    }
-
-    showToast("Referral link copied.");
-
-  } catch (error) {
+  } catch {
 
     input.select();
 
+    document.execCommand(
+      "copy"
+    );
+
     showToast(
-      "Select and copy the referral link."
+      "Referral link copied."
     );
 
   }
@@ -824,196 +1382,55 @@ async function copyReferral() {
 
 function shareReferral() {
 
-  const input =
-    document.getElementById("referralInput");
+  const user =
+    getTelegramUser();
 
-  if (!input) return;
 
-  const url =
-    "https://t.me/share/url?url=" +
-    encodeURIComponent(input.value) +
-    "&text=" +
-    encodeURIComponent(
-      "Join NX Coin and start earning NX Coins!"
+  if (!user?.id) {
+
+    showToast(
+      "Open NX Coin from Telegram."
     );
-
-  if (tg) {
-
-    try {
-
-      tg.openTelegramLink(url);
-
-      return;
-
-    } catch (e) {}
-
-  }
-
-  window.open(url, "_blank");
-
-}
-
-
-/* =========================================================
-   NAVIGATION
-========================================================= */
-
-function openPage(pageName) {
-
-  const pages = {
-
-    home: "homePage",
-
-    earn: "earnPage",
-
-    referral: "referralPage",
-
-    wallet: "walletPage"
-
-  };
-
-
-  Object.values(pages).forEach(id => {
-
-    const element =
-      document.getElementById(id);
-
-    if (element) {
-
-      element.classList.remove("active");
-
-    }
-
-  });
-
-
-  const target =
-    document.getElementById(
-      pages[pageName]
-    );
-
-  if (target) {
-
-    target.classList.add("active");
-
-  }
-
-
-  const navs = {
-
-    home: "navHome",
-
-    earn: "navEarn",
-
-    referral: "navReferral",
-
-    wallet: "navWallet"
-
-  };
-
-
-  Object.values(navs).forEach(id => {
-
-    const element =
-      document.getElementById(id);
-
-    if (element) {
-
-      element.classList.remove("active");
-
-    }
-
-  });
-
-
-  const activeNav =
-    document.getElementById(
-      navs[pageName]
-    );
-
-  if (activeNav) {
-
-    activeNav.classList.add("active");
-
-  }
-
-
-  window.scrollTo({
-
-    top: 0,
-
-    behavior: "smooth"
-
-  });
-
-}
-
-
-/* =========================================================
-   TASKS
-========================================================= */
-
-function renderTasks() {
-
-  const list =
-    document.getElementById("taskList");
-
-  list.innerHTML =
-    CONFIG.TASKS.map(task => `
-
-      <div class="task">
-
-        <div class="task-icon">
-          ▶️
-        </div>
-
-        <div class="task-info">
-
-          <div class="task-title">
-            ${escapeHtml(task.title)}
-          </div>
-
-          <div class="task-reward">
-            +${Number(task.reward).toLocaleString()} NX Coins
-          </div>
-
-        </div>
-
-        <button
-          class="task-btn"
-          type="button"
-          onclick="completeTask(${Number(task.id)})"
-        >
-          Coming Soon
-        </button>
-
-      </div>
-
-    `).join("");
-
-}
-
-
-function completeTask(taskId) {
-
-  const task =
-    CONFIG.TASKS.find(
-      item =>
-        Number(item.id) ===
-        Number(taskId)
-    );
-
-  if (!task) {
-
-    showToast("Task unavailable.");
 
     return;
 
   }
 
-  showToast(
-    "This task is coming soon."
-  );
+
+  const link =
+    "https://t.me/" +
+    CONFIG.BOT_USERNAME +
+    "?start=ref_" +
+    user.id;
+
+
+  const url =
+    "https://t.me/share/url?url=" +
+    encodeURIComponent(link) +
+    "&text=" +
+    encodeURIComponent(
+      "Join NX Coin and start earning NX Coins 🚀"
+    );
+
+
+  if (
+    tg &&
+    typeof tg.openTelegramLink ===
+      "function"
+  ) {
+
+    tg.openTelegramLink(
+      url
+    );
+
+  } else {
+
+    window.open(
+      url,
+      "_blank"
+    );
+
+  }
 
 }
 
@@ -1022,7 +1439,9 @@ function completeTask(taskId) {
    WITHDRAW
 ========================================================= */
 
-function isValidBscAddress(address) {
+function isValidBscAddress(
+  address
+) {
 
   return /^0x[a-fA-F0-9]{40}$/.test(
     address
@@ -1035,14 +1454,19 @@ function requestWithdrawal() {
 
   const wallet =
     document
-      .getElementById("walletAddress")
+      .getElementById(
+        "walletAddress"
+      )
       .value
       .trim();
+
 
   const amount =
     Number(
       document
-        .getElementById("withdrawAmount")
+        .getElementById(
+          "withdrawAmount"
+        )
         .value
     );
 
@@ -1058,7 +1482,11 @@ function requestWithdrawal() {
   }
 
 
-  if (!isValidBscAddress(wallet)) {
+  if (
+    !isValidBscAddress(
+      wallet
+    )
+  ) {
 
     showToast(
       "Enter a valid BSC wallet address."
@@ -1069,10 +1497,14 @@ function requestWithdrawal() {
   }
 
 
-  if (!Number.isFinite(amount)) {
+  if (
+    !Number.isInteger(
+      amount
+    )
+  ) {
 
     showToast(
-      "Enter a withdrawal amount."
+      "Enter a valid NX Coin amount."
     );
 
     return;
@@ -1080,7 +1512,10 @@ function requestWithdrawal() {
   }
 
 
-  if (amount < CONFIG.MIN_WITHDRAWAL) {
+  if (
+    amount <
+    CONFIG.MIN_WITHDRAWAL
+  ) {
 
     showToast(
       "Minimum withdrawal is " +
@@ -1093,7 +1528,10 @@ function requestWithdrawal() {
   }
 
 
-  if (amount > appState.balance) {
+  if (
+    amount >
+    state.balance
+  ) {
 
     showToast(
       "Insufficient NX Coins."
@@ -1105,11 +1543,8 @@ function requestWithdrawal() {
 
 
   pendingWithdrawal = {
-
     wallet,
-
     amount
-
   };
 
 
@@ -1123,37 +1558,35 @@ function requestWithdrawal() {
   document.getElementById(
     "confirmWallet"
   ).textContent =
-    shortenAddress(wallet);
+    shortenAddress(
+      wallet
+    );
 
 
   document
-    .getElementById("confirmModal")
-    .classList.add("show");
+    .getElementById(
+      "confirmModal"
+    )
+    .classList.add(
+      "show"
+    );
 
 }
 
 
-function shortenAddress(address) {
-
-  if (
-    !address ||
-    address.length < 12
-  ) {
-
-    return address;
-
-  }
+function shortenAddress(
+  address
+) {
 
   return (
-
-    address.substring(0, 7) +
-
+    address.substring(
+      0,
+      7
+    ) +
     "..." +
-
     address.substring(
       address.length - 5
     )
-
   );
 
 }
@@ -1162,11 +1595,19 @@ function shortenAddress(address) {
 function closeWithdrawModal() {
 
   document
-    .getElementById("confirmModal")
-    .classList.remove("show");
+    .getElementById(
+      "confirmModal"
+    )
+    .classList.remove(
+      "show"
+    );
 
 }
 
+
+/* =========================================================
+   SUBMIT WITHDRAWAL
+========================================================= */
 
 async function submitWithdrawal() {
 
@@ -1182,79 +1623,77 @@ async function submitWithdrawal() {
   }
 
 
-  if (!CONFIG.API_BASE) {
-
-    closeWithdrawModal();
-
-    showToast(
-      "Withdrawal system will be connected after backend setup."
-    );
-
-    return;
-
-  }
-
-
   try {
 
-    const response =
-      await fetch(
-        CONFIG.API_BASE +
+    const result =
+      await api(
         "/payout",
         {
-
           method: "POST",
 
-          headers: {
-            "Content-Type":
-              "application/json"
-          },
+          body:
+            JSON.stringify({
 
-          body: JSON.stringify({
+              wallet:
+                pendingWithdrawal.wallet,
 
-            initData:
-              tg?.initData || "",
+              amount:
+                pendingWithdrawal.amount
 
-            amount:
-              pendingWithdrawal.amount,
-
-            wallet:
-              pendingWithdrawal.wallet
-
-          })
-
+            })
         }
       );
 
 
-    const result =
-      await response.json();
+    closeWithdrawModal();
 
 
-    if (!response.ok) {
+    const status =
+      result?.payout?.status ||
+      "pending";
 
-      throw new Error(
-        result?.error ||
-        "Withdrawal failed."
+
+    if (
+      status ===
+      "paid"
+    ) {
+
+      showToast(
+        "✅ Withdrawal successful."
+      );
+
+    } else {
+
+      showToast(
+        "⏳ Withdrawal submitted."
       );
 
     }
 
 
-    closeWithdrawModal();
-
-    showToast(
-      result?.message ||
-      "Withdrawal submitted successfully."
-    );
+    pendingWithdrawal = {
+      wallet: "",
+      amount: 0
+    };
 
 
-    loadWithdrawalHistory();
+    document.getElementById(
+      "walletAddress"
+    ).value = "";
+
+
+    document.getElementById(
+      "withdrawAmount"
+    ).value = "";
+
+
+    await sync();
 
 
   } catch (error) {
 
     closeWithdrawModal();
+
 
     showToast(
       error.message ||
@@ -1267,98 +1706,59 @@ async function submitWithdrawal() {
 
 
 /* =========================================================
-   WITHDRAW HISTORY
+   HISTORY
 ========================================================= */
 
-async function loadWithdrawalHistory() {
-
-  if (!CONFIG.API_BASE) {
-
-    renderWithdrawalHistory([]);
-
-    return;
-
-  }
-
+async function loadHistory() {
 
   try {
 
-    const response =
-      await fetch(
-        CONFIG.API_BASE +
+    const result =
+      await api(
         "/payouts",
         {
-
-          headers: {
-
-            "X-Telegram-Init-Data":
-              tg?.initData || ""
-
-          }
-
+          method: "GET"
         }
       );
 
 
-    if (!response.ok) {
-
-      renderWithdrawalHistory([]);
-
-      return;
-
-    }
-
-
-    const result =
-      await response.json();
-
-
-    renderWithdrawalHistory(
-
-      Array.isArray(result?.payouts)
-
+    state.payouts =
+      Array.isArray(
+        result?.payouts
+      )
         ? result.payouts
+        : [];
 
-        : Array.isArray(result)
 
-          ? result
-
-          : []
-
-    );
+    renderHistory();
 
 
   } catch (error) {
 
-    renderWithdrawalHistory([]);
+    console.error(
+      "History error:",
+      error
+    );
 
   }
 
 }
 
 
-function renderWithdrawalHistory(items) {
+function renderHistory() {
 
   const container =
     document.getElementById(
       "historyList"
     );
 
-  if (!container) return;
-
 
   if (
-    !Array.isArray(items) ||
-    items.length === 0
+    !state.payouts.length
   ) {
 
-    container.innerHTML = `
-
-      <div class="empty">
-        No withdrawals yet.
-      </div>
-
-    `;
+    container.innerHTML =
+      `<div class="empty">No withdrawals yet.</div>`;
 
     return;
 
@@ -1366,123 +1766,86 @@ function renderWithdrawalHistory(items) {
 
 
   container.innerHTML =
-    items.map(item => {
+    state.payouts.map(
+      item => {
 
-      const status =
-        String(
-          item.status ||
-          "pending"
-        ).toLowerCase();
-
-
-      let statusClass =
-        "status-pending";
+        const status =
+          String(
+            item.status ||
+            "pending"
+          ).toLowerCase();
 
 
-      if (status === "paid") {
-
-        statusClass =
-          "status-paid";
-
-      }
+        let cls =
+          "status-pending";
 
 
-      if (status === "failed") {
+        if (
+          status ===
+          "paid"
+        ) {
 
-        statusClass =
-          "status-failed";
+          cls =
+            "status-paid";
 
-      }
+        }
 
 
-      return `
+        if (
+          status ===
+          "failed"
+        ) {
 
-        <div class="history-item">
+          cls =
+            "status-failed";
 
-          <div class="history-icon">
-            ◈
-          </div>
+        }
 
-          <div class="history-info">
 
-            <div class="history-amount">
+        const date =
+          item.createdAt ||
+          item.created_at ||
+          "";
 
-              ${Number(
-                item.amount || 0
-              ).toLocaleString()}
-              NX Coins
+
+        return `
+
+          <div class="history-item">
+
+            <div class="history-icon">
+              ◈
+            </div>
+
+            <div class="history-info">
+
+              <div class="history-amount">
+                ${Number(
+                  item.amount || 0
+                ).toLocaleString()}
+                NX Coins
+              </div>
+
+              <div class="history-date">
+                ${escapeHtml(
+                  date
+                    ? new Date(date)
+                      .toLocaleString()
+                    : ""
+                )}
+              </div>
 
             </div>
 
-            <div class="history-date">
-
-              ${escapeHtml(
-                item.created_at || ""
-              )}
-
+            <div class="history-status ${cls}">
+              ${escapeHtml(status)}
             </div>
 
           </div>
 
-          <div class="history-status ${statusClass}">
+        `;
 
-            ${escapeHtml(status)}
-
-          </div>
-
-        </div>
-
-      `;
-
-    }).join("");
-
-}
-
-
-/* =========================================================
-   STATE
-========================================================= */
-
-function renderState() {
-
-  document.getElementById(
-    "balance"
-  ).textContent =
-    appState.balance.toLocaleString();
-
-
-  document.getElementById(
-    "totalEarned"
-  ).textContent =
-    appState.totalEarned.toLocaleString();
-
-
-  document.getElementById(
-    "referrals"
-  ).textContent =
-    appState.referrals.toLocaleString();
-
-
-  document.getElementById(
-    "referralCount"
-  ).textContent =
-    appState.referrals.toLocaleString();
-
-
-  document.getElementById(
-    "referralEarned"
-  ).textContent =
-    (
-      appState.referrals *
-      CONFIG.REFERRAL_REWARD
-    ).toLocaleString();
-
-
-  document.getElementById(
-    "availableBalance"
-  ).textContent =
-    appState.balance.toLocaleString() +
-    " NX Coins";
+      }
+    ).join("");
 
 }
 
@@ -1491,39 +1854,55 @@ function renderState() {
    TOAST
 ========================================================= */
 
-function showToast(message) {
+let toastTimer = null;
+
+
+function showToast(
+  message
+) {
 
   const toast =
-    document.getElementById("toast");
+    document.getElementById(
+      "toast"
+    );
 
-  if (!toast) return;
 
   toast.textContent =
     message;
 
-  toast.classList.add("show");
 
-  clearTimeout(
-    window.__nxToastTimer
+  toast.classList.add(
+    "show"
   );
 
-  window.__nxToastTimer =
-    setTimeout(() => {
 
-      toast.classList.remove(
-        "show"
-      );
+  clearTimeout(
+    toastTimer
+  );
 
-    }, 2800);
+
+  toastTimer =
+    setTimeout(
+      () => {
+
+        toast.classList.remove(
+          "show"
+        );
+
+      },
+      3200
+    );
 
 }
 
 
 /* =========================================================
-   SECURITY / HTML ESCAPE
+   ESCAPE HTML
 ========================================================= */
 
-function escapeHtml(value) {
+function escapeHtml(
+  value
+) {
 
   return String(value)
 
@@ -1559,17 +1938,53 @@ function escapeHtml(value) {
    INIT
 ========================================================= */
 
-function init() {
+async function init() {
 
-  applyConfig();
+  document.getElementById(
+    "appName"
+  ).textContent =
+    CONFIG.APP_NAME;
 
-  setupTelegramUser();
 
-  renderTasks();
+  if (!tg) {
 
-  renderState();
+    showToast(
+      "Please open NX Coin from Telegram."
+    );
 
-  loadWithdrawalHistory();
+    return;
+
+  }
+
+
+  tg.ready();
+  tg.expand();
+
+
+  const user =
+    getTelegramUser();
+
+
+  if (user) {
+
+    document.getElementById(
+      "avatar"
+    ).textContent =
+      (
+        user.first_name ||
+        user.username ||
+        "N"
+      )
+      .charAt(0)
+      .toUpperCase();
+
+  }
+
+
+  buildReferralLink();
+
+
+  await sync();
 
 }
 
