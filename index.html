@@ -2,58 +2,70 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <title>NX Coin</title>
+
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;padding:0;min-height:100%;width:100%;background:#080b12;color:#f5f7fb;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+html,body{margin:0;padding:0;width:100%;min-height:100%;background:#080b12;color:#f5f7fb;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
 body{overflow-x:hidden}
-.app{width:100%;max-width:520px;min-height:100vh;margin:0 auto;padding:18px 16px 105px}
+button,input{font:inherit}
+button{cursor:pointer}
+.app{width:100%;max-width:520px;min-height:100vh;margin:auto;padding:18px 16px 105px}
+
 .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:23px}
 .brand{display:flex;align-items:center;gap:11px}
-.brand-logo{width:43px;height:43px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#7657ff,#397cf5);box-shadow:0 8px 28px rgba(87,77,255,.27);font-size:21px;font-weight:900}
+.brand-logo{width:43px;height:43px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#7657ff,#397cf5);font-size:21px;font-weight:900}
 .brand-text h1{margin:0;font-size:18px;font-weight:850}
 .brand-text p{margin:2px 0 0;color:#788294;font-size:11px}
 .avatar{width:43px;height:43px;border-radius:50%;background:#151a26;border:1px solid #282f3e;display:flex;align-items:center;justify-content:center;color:#bbc4d5;font-weight:800}
-.balance-card{position:relative;overflow:hidden;padding:23px;border-radius:24px;background:radial-gradient(circle at 90% 10%,rgba(99,102,241,.22),transparent 38%),linear-gradient(145deg,#141927,#0e121c);border:1px solid #252c3d;margin-bottom:15px}
+
+.balance-card{padding:23px;border-radius:24px;background:radial-gradient(circle at 90% 10%,rgba(99,102,241,.22),transparent 38%),linear-gradient(145deg,#141927,#0e121c);border:1px solid #252c3d;margin-bottom:15px}
 .balance-label{color:#8992a5;font-size:12px;font-weight:600;margin-bottom:8px}
 .balance-row{display:flex;align-items:baseline;gap:8px}
-.balance{font-size:35px;line-height:1;font-weight:900;letter-spacing:-1px}
+.balance{font-size:35px;line-height:1;font-weight:900}
 .coin-name{color:#8f98aa;font-size:13px;font-weight:700}
 .balance-bottom{display:flex;align-items:center;justify-content:space-between;margin-top:19px;color:#7e8799;font-size:10px;gap:10px}
 .status{display:flex;align-items:center;gap:6px;white-space:nowrap}
-.status-dot{width:7px;height:7px;border-radius:50%;background:#39d98a;box-shadow:0 0 10px rgba(57,217,138,.7)}
+.status-dot{width:7px;height:7px;border-radius:50%;background:#39d98a}
+
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:23px}
 .stat{padding:15px 12px;border-radius:17px;background:#10141e;border:1px solid #202635}
 .stat-value{font-size:17px;font-weight:850;margin-bottom:5px}
 .stat-label{color:#747e91;font-size:10px;font-weight:600}
+
 .section-head{display:flex;align-items:center;justify-content:space-between;margin:0 2px 12px}
 .section-head h2{margin:0;font-size:17px;font-weight:850}
 .section-head span{color:#6e7789;font-size:11px}
+
 .feature{padding:18px;border-radius:20px;background:#111620;border:1px solid #222938;margin-bottom:12px}
 .feature-top{display:flex;align-items:center;gap:13px;margin-bottom:14px}
 .feature-icon{width:43px;height:43px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:#1a2030;font-size:20px}
 .feature-title{font-size:14px;font-weight:800}
 .feature-description{color:#80899a;font-size:11px;line-height:1.5;margin-top:3px}
-.primary-btn{width:100%;min-height:46px;border:0;border-radius:14px;color:white;font-weight:800;font-size:13px;background:linear-gradient(135deg,#7158ff,#397cf6);box-shadow:0 8px 22px rgba(76,91,246,.2)}
+
+.primary-btn{width:100%;min-height:46px;border:0;border-radius:14px;color:#fff;font-weight:800;font-size:13px;background:linear-gradient(135deg,#7158ff,#397cf6)}
+
 .task-list{display:flex;flex-direction:column;gap:10px}
 .task{display:flex;align-items:center;gap:12px;padding:14px;border-radius:18px;background:#10141e;border:1px solid #202735}
 .task-icon{width:42px;height:42px;flex:0 0 42px;border-radius:13px;background:#191f2c;display:flex;align-items:center;justify-content:center;font-size:18px}
 .task-info{min-width:0;flex:1}
 .task-title{font-size:12px;font-weight:800}
 .task-reward{margin-top:4px;color:#8c95a7;font-size:10px}
-.task-btn{min-width:92px;height:35px;padding:0 9px;border-radius:10px;background:#191f2d;color:#cbd3e2;border:1px solid #2a3242;font-size:10px;font-weight:800}
+.task-btn{min-width:96px;height:35px;padding:0 10px;border-radius:10px;background:#191f2d;color:#cbd3e2;border:1px solid #2a3242;font-size:10px;font-weight:800}
 .task-btn.primary{background:linear-gradient(135deg,#7158ff,#397cf6);border-color:transparent;color:#fff}
-.task-btn.success{background:#13261e;border-color:#244e3b;color:#62d49b}
-.task-btn:disabled{opacity:.55}
+.task-btn.success{background:#13261e;border-color:#24583f;color:#62d49b}
+.task-btn.cooldown{background:#1b2331;color:#9ca7ba;border-color:#293446}
+
 .referral-card,.wallet-card{padding:19px;border-radius:20px;background:linear-gradient(145deg,#131824,#0e121b);border:1px solid #232a39;margin-top:14px}
 .referral-title{font-size:15px;font-weight:850;margin-bottom:5px}
 .referral-text{color:#7e8799;font-size:11px;line-height:1.5;margin-bottom:15px}
 .referral-box{display:flex;gap:8px}
 .referral-input{flex:1;min-width:0;height:43px;border-radius:12px;border:1px solid #293141;background:#0a0e15;color:#adb6c8;padding:0 12px;font-size:10px;outline:none}
 .copy-btn{width:78px;border-radius:12px;background:#1b2230;border:1px solid #2a3344;color:#dce2ed;font-size:11px;font-weight:800}
+
 .wallet-header{display:flex;align-items:center;gap:12px;margin-bottom:18px}
 .wallet-icon{width:44px;height:44px;border-radius:13px;background:#1a2030;display:flex;align-items:center;justify-content:center;font-size:20px}
 .wallet-title{font-size:15px;font-weight:850}
@@ -66,16 +78,16 @@ body{overflow-x:hidden}
 .input-group{margin-bottom:14px}
 .input-label{display:block;color:#858ea0;font-size:10px;font-weight:700;margin-bottom:7px}
 .wallet-input{width:100%;height:47px;border-radius:13px;background:#0a0e15;border:1px solid #293141;outline:none;color:#eef1f7;padding:0 13px;font-size:12px}
-.wallet-input:focus{border-color:#5968e8}
-.available-row{display:flex;justify-content:space-between;align-items:center;margin:2px 0 15px;padding:11px 12px;border-radius:11px;background:#151b27}
+.available-row{display:flex;justify-content:space-between;padding:11px 12px;border-radius:11px;background:#151b27;margin-bottom:15px}
 .available-label{color:#7e8799;font-size:10px}
 .available-value{font-size:11px;font-weight:800}
 .min-info{padding:12px;border-radius:12px;background:#151b27;border:1px solid #202a39;color:#7e8799;font-size:10px;line-height:1.55;margin-bottom:14px}
 .min-info strong{color:#cdd4e1}
-.withdraw-btn{width:100%;min-height:48px;border:0;border-radius:14px;color:white;font-weight:850;font-size:13px;background:linear-gradient(135deg,#7158ff,#397cf6)}
+.withdraw-btn{width:100%;min-height:48px;border:0;border-radius:14px;color:#fff;font-weight:850;font-size:13px;background:linear-gradient(135deg,#7158ff,#397cf6)}
+
 .history-list{display:flex;flex-direction:column;gap:9px}
 .history-item{display:flex;align-items:center;gap:11px;padding:13px;border-radius:16px;background:#10141e;border:1px solid #202735}
-.history-icon{width:38px;height:38px;border-radius:11px;background:#181e2b;display:flex;align-items:center;justify-content:center;font-size:16px}
+.history-icon{width:38px;height:38px;border-radius:11px;background:#181e2b;display:flex;align-items:center;justify-content:center}
 .history-info{flex:1;min-width:0}
 .history-amount{font-size:12px;font-weight:800}
 .history-date{margin-top:3px;color:#6f788a;font-size:9px}
@@ -84,12 +96,15 @@ body{overflow-x:hidden}
 .status-paid{background:#13261e;color:#62d49b}
 .status-failed{background:#2a191b;color:#e2767d}
 .empty{padding:28px 15px;text-align:center;color:#6f788a;font-size:11px;background:#10141e;border:1px solid #202735;border-radius:18px}
+
 .page{display:none}
 .page.active{display:block}
+
 .bottom-nav{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);width:calc(100% - 26px);max-width:494px;padding:8px;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;border-radius:20px;background:rgba(16,20,29,.95);border:1px solid #252c3a;backdrop-filter:blur(18px);z-index:50}
 .nav-btn{min-height:53px;border:0;border-radius:14px;background:transparent;color:#70798c;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:9px;font-weight:750}
-.nav-icon{font-size:17px;line-height:1}
+.nav-icon{font-size:17px}
 .nav-btn.active{background:#1a2030;color:#dce2ef}
+
 .modal-overlay{position:fixed;inset:0;z-index:200;display:none;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.58);padding:12px}
 .modal-overlay.show{display:flex}
 .modal{width:100%;max-width:500px;border-radius:23px;background:#111620;border:1px solid #293141;padding:20px}
@@ -100,15 +115,18 @@ body{overflow-x:hidden}
 .confirm-row:last-child{margin-bottom:0}
 .confirm-label{color:#727c8f;font-size:10px}
 .confirm-value{color:#e5e9f1;font-size:10px;font-weight:750;text-align:right;max-width:65%;overflow-wrap:anywhere}
+.usdt-note{margin-top:6px;color:#747f92;font-size:9px;text-align:right}
 .modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .cancel-btn{min-height:46px;border-radius:13px;background:#1a202c;border:1px solid #293242;color:#c8d0de;font-size:12px;font-weight:800}
-.toast{position:fixed;left:50%;bottom:88px;transform:translateX(-50%) translateY(20px);width:calc(100% - 40px);max-width:450px;padding:13px 15px;border-radius:13px;background:#1b2230;border:1px solid #30394c;color:#e5e9f1;text-align:center;font-size:11px;font-weight:650;opacity:0;pointer-events:none;transition:all .25s ease;z-index:300}
+
+.toast{position:fixed;left:50%;bottom:88px;transform:translateX(-50%) translateY(20px);width:calc(100% - 40px);max-width:450px;padding:13px 15px;border-radius:13px;background:#1b2230;border:1px solid #30394c;color:#e5e9f1;text-align:center;font-size:11px;font-weight:650;opacity:0;pointer-events:none;transition:.25s;z-index:300}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
 @media(max-width:360px){
-  .app{padding-left:12px;padding-right:12px}
-  .balance{font-size:31px}
-  .task{padding:12px}
-  .task-btn{min-width:82px;padding:0 7px}
+.app{padding-left:12px;padding-right:12px}
+.balance{font-size:31px}
+.task{padding:12px}
+.task-btn{min-width:82px;padding:0 7px}
 }
 </style>
 </head>
@@ -118,843 +136,825 @@ body{overflow-x:hidden}
 <div class="app">
 
 <header class="topbar">
-  <div class="brand">
-    <div class="brand-logo">N</div>
-
-    <div class="brand-text">
-      <h1 id="appName">NX Coin</h1>
-      <p>Earn. Collect. Grow.</p>
-    </div>
-  </div>
-
-  <div class="avatar" id="avatar">N</div>
+<div class="brand">
+<div class="brand-logo">N</div>
+<div class="brand-text">
+<h1 id="appName">NX Coin</h1>
+<p>Earn. Collect. Grow.</p>
+</div>
+</div>
+<div class="avatar" id="avatar">N</div>
 </header>
-
-
-<!-- HOME -->
 
 <main id="homePage" class="page active">
 
-  <section class="balance-card">
+<section class="balance-card">
+<div class="balance-label">Available Balance</div>
+<div class="balance-row">
+<div class="balance" id="balance">500</div>
+<div class="coin-name">NX Coins</div>
+</div>
+<div class="balance-bottom">
+<div class="status">
+<span class="status-dot"></span>
+Account active
+</div>
+<div>Keep earning to grow</div>
+</div>
+</section>
 
-    <div class="balance-label">
-      Available Balance
-    </div>
+<section class="stats">
 
-    <div class="balance-row">
-      <div class="balance" id="balance">0</div>
-      <div class="coin-name">NX Coins</div>
-    </div>
+<div class="stat">
+<div class="stat-value" id="totalEarned">500</div>
+<div class="stat-label">Balance</div>
+</div>
 
-    <div class="balance-bottom">
-      <div class="status">
-        <span class="status-dot"></span>
-        Account active
-      </div>
+<div class="stat">
+<div class="stat-value" id="referrals">0</div>
+<div class="stat-label">Referrals</div>
+</div>
 
-      <div>
-        Keep earning to grow your balance
-      </div>
-    </div>
+<div class="stat">
+<div class="stat-value">24h</div>
+<div class="stat-label">Cooldown</div>
+</div>
 
-  </section>
+</section>
 
+<div class="section-head">
+<h2>Start Earning</h2>
+<span>Rewards</span>
+</div>
 
-  <section class="stats">
+<section class="feature">
 
-    <div class="stat">
-      <div class="stat-value" id="totalEarned">0</div>
-      <div class="stat-label">Balance</div>
-    </div>
+<div class="feature-top">
+<div class="feature-icon">⚡</div>
+<div>
+<div class="feature-title">Complete Tasks</div>
+<div class="feature-description">
+Complete available tasks and collect NX Coins.
+</div>
+</div>
+</div>
 
-    <div class="stat">
-      <div class="stat-value" id="referrals">0</div>
-      <div class="stat-label">Referrals</div>
-    </div>
+<button class="primary-btn" onclick="openPage('earn')">
+View Tasks
+</button>
 
-    <div class="stat">
-      <div class="stat-value" id="cooldownText">24h</div>
-      <div class="stat-label">Task Cooldown</div>
-    </div>
+</section>
 
-  </section>
+<section class="referral-card">
 
+<div class="referral-title">Invite Friends</div>
 
-  <div class="section-head">
-    <h2>Start Earning</h2>
-    <span>Daily rewards</span>
-  </div>
+<div class="referral-text">
+Share your referral link and earn 100 NX Coins when friends join.
+</div>
 
+<div class="referral-box">
 
-  <section class="feature">
+<input
+class="referral-input"
+id="referralInput"
+readonly
+placeholder="Loading..."
+>
 
-    <div class="feature-top">
+<button class="copy-btn" onclick="copyReferral()">
+Copy
+</button>
 
-      <div class="feature-icon">
-        ⚡
-      </div>
+</div>
 
-      <div>
-        <div class="feature-title">
-          Complete Tasks
-        </div>
-
-        <div class="feature-description">
-          Complete available tasks and collect NX Coins.
-        </div>
-      </div>
-
-    </div>
-
-    <button
-      class="primary-btn"
-      type="button"
-      onclick="openPage('earn')"
-    >
-      View Tasks
-    </button>
-
-  </section>
-
-
-  <section class="referral-card">
-
-    <div class="referral-title">
-      Invite Friends
-    </div>
-
-    <div class="referral-text">
-      Share your referral link and earn extra NX Coins when friends join.
-    </div>
-
-    <div class="referral-box">
-
-      <input
-        class="referral-input"
-        id="referralInput"
-        readonly
-        value="Loading referral link..."
-      >
-
-      <button
-        class="copy-btn"
-        type="button"
-        onclick="copyReferral()"
-      >
-        Copy
-      </button>
-
-    </div>
-
-  </section>
+</section>
 
 </main>
 
-
-<!-- EARN -->
 
 <main id="earnPage" class="page">
 
-  <div class="section-head">
-    <h2>Tasks</h2>
-    <span>Earn rewards</span>
-  </div>
+<div class="section-head">
+<h2>Tasks</h2>
+<span>Earn rewards</span>
+</div>
 
-  <div
-    class="task-list"
-    id="taskList"
-  >
-    <div class="empty">
-      Loading tasks...
-    </div>
-  </div>
+<div class="task-list" id="taskList">
+<div class="empty">Loading tasks...</div>
+</div>
 
 </main>
 
-
-<!-- REFERRAL -->
 
 <main id="referralPage" class="page">
 
-  <div class="section-head">
-    <h2>Referrals</h2>
-    <span>Grow together</span>
-  </div>
+<div class="section-head">
+<h2>Referrals</h2>
+<span>Grow together</span>
+</div>
 
+<section class="feature">
 
-  <section class="feature">
+<div class="feature-top">
 
-    <div class="feature-top">
+<div class="feature-icon">👥</div>
 
-      <div class="feature-icon">
-        👥
-      </div>
+<div>
+<div class="feature-title">Invite Friends</div>
+<div class="feature-description">
+Invite friends using your personal referral link and earn 100 NX Coins.
+</div>
+</div>
 
-      <div>
+</div>
 
-        <div class="feature-title">
-          Invite Friends
-        </div>
+<button class="primary-btn" onclick="shareReferral()">
+Share Referral Link
+</button>
 
-        <div class="feature-description">
-          Invite friends using your personal referral link and receive referral rewards when they join.
-        </div>
+</section>
 
-      </div>
+<section class="referral-card">
 
-    </div>
+<div class="referral-title">Your Referral Link</div>
 
-    <button
-      class="primary-btn"
-      type="button"
-      onclick="shareReferral()"
-    >
-      Share Referral Link
-    </button>
+<div class="referral-text">
+Copy your link and share it with your friends.
+</div>
 
-  </section>
+<div class="referral-box">
 
+<input
+class="referral-input"
+id="referralInput2"
+readonly
+placeholder="Loading..."
+>
 
-  <section class="referral-card">
+<button class="copy-btn" onclick="copyReferral()">
+Copy
+</button>
 
-    <div class="referral-title">
-      Your Referral Link
-    </div>
+</div>
 
-    <div class="referral-text">
-      Copy your link and share it with your friends.
-    </div>
+</section>
 
-    <div class="referral-box">
+<section class="stats" style="margin-top:14px">
 
-      <input
-        class="referral-input"
-        id="referralInput2"
-        readonly
-        value="Loading referral link..."
-      >
+<div class="stat">
+<div class="stat-value" id="referralCount">0</div>
+<div class="stat-label">Friends Joined</div>
+</div>
 
-      <button
-        class="copy-btn"
-        type="button"
-        onclick="copyReferral()"
-      >
-        Copy
-      </button>
+<div class="stat">
+<div class="stat-value">100</div>
+<div class="stat-label">Reward / Friend</div>
+</div>
 
-    </div>
+<div class="stat">
+<div class="stat-value" id="referralEarned">0</div>
+<div class="stat-label">Earned</div>
+</div>
 
-  </section>
-
-
-  <section
-    class="stats"
-    style="margin-top:14px;"
-  >
-
-    <div class="stat">
-      <div
-        class="stat-value"
-        id="referralCount"
-      >
-        0
-      </div>
-
-      <div class="stat-label">
-        Friends Joined
-      </div>
-    </div>
-
-
-    <div class="stat">
-
-      <div
-        class="stat-value"
-        id="referralRewardValue"
-      >
-        100
-      </div>
-
-      <div class="stat-label">
-        Reward / Friend
-      </div>
-
-    </div>
-
-
-    <div class="stat">
-
-      <div
-        class="stat-value"
-        id="referralEarned"
-      >
-        0
-      </div>
-
-      <div class="stat-label">
-        Referral Earned
-      </div>
-
-    </div>
-
-  </section>
+</section>
 
 </main>
 
 
-<!-- WITHDRAW -->
-
 <main id="walletPage" class="page">
 
-  <div class="section-head">
-    <h2>Withdraw</h2>
-    <span>NX Coins</span>
-  </div>
+<div class="section-head">
+<h2>Withdraw</h2>
+<span>NX Coins</span>
+</div>
 
+<section class="wallet-card">
 
-  <section class="wallet-card">
+<div class="wallet-header">
 
-    <div class="wallet-header">
+<div class="wallet-icon">◈</div>
 
-      <div class="wallet-icon">
-        ◈
-      </div>
+<div>
+<div class="wallet-title">Withdraw NX Coins</div>
+<div class="wallet-subtitle">
+Send your withdrawal to your BSC wallet
+</div>
+</div>
 
-      <div>
+</div>
 
-        <div class="wallet-title">
-          Withdraw NX Coins
-        </div>
+<div class="network-box">
 
-        <div class="wallet-subtitle">
-          Send your withdrawal to your BSC wallet
-        </div>
+<div class="network-left">
+<span class="network-dot"></span>
+<div class="network-name">BNB Smart Chain</div>
+</div>
 
-      </div>
+<div class="network-tag">BSC</div>
 
-    </div>
+</div>
 
+<div class="input-group">
 
-    <div class="network-box">
+<label class="input-label">
+Wallet Address
+</label>
 
-      <div class="network-left">
+<input
+id="walletAddress"
+class="wallet-input"
+type="text"
+inputmode="text"
+autocomplete="off"
+autocapitalize="off"
+spellcheck="false"
+placeholder="0x..."
+>
 
-        <span class="network-dot"></span>
+</div>
 
-        <div class="network-name">
-          BNB Smart Chain
-        </div>
+<div class="available-row">
 
-      </div>
+<div class="available-label">
+Available
+</div>
 
-      <div class="network-tag">
-        BSC
-      </div>
+<div class="available-value" id="availableBalance">
+500 NX Coins
+</div>
 
-    </div>
+</div>
 
+<div class="input-group">
 
-    <div class="input-group">
+<label class="input-label">
+Withdrawal Amount
+</label>
 
-      <label class="input-label">
-        Wallet Address
-      </label>
+<input
+id="withdrawAmount"
+class="wallet-input"
+type="number"
+inputmode="numeric"
+min="500"
+step="1"
+placeholder="Enter NX Coins"
+>
 
-      <input
-        id="walletAddress"
-        class="wallet-input"
-        type="text"
-        inputmode="text"
-        autocomplete="off"
-        autocapitalize="off"
-        spellcheck="false"
-        placeholder="0x..."
-      >
+</div>
 
-    </div>
+<div class="min-info">
 
+Minimum withdrawal:
+<strong>500 NX Coins</strong>
 
-    <div class="available-row">
+<br>
 
-      <div class="available-label">
-        Available
-      </div>
+Enter the correct BSC wallet address. Withdrawals cannot be reversed after processing.
 
-      <div
-        class="available-value"
-        id="availableBalance"
-      >
-        0 NX Coins
-      </div>
+</div>
 
-    </div>
+<button class="withdraw-btn" onclick="requestWithdrawal()">
+Continue
+</button>
 
+</section>
 
-    <div class="input-group">
+<div class="section-head" style="margin-top:25px">
+<h2>Withdrawal History</h2>
+<span>Recent</span>
+</div>
 
-      <label class="input-label">
-        Withdrawal Amount
-      </label>
-
-      <input
-        id="withdrawAmount"
-        class="wallet-input"
-        type="number"
-        inputmode="numeric"
-        min="500"
-        step="1"
-        placeholder="Enter NX Coins"
-      >
-
-    </div>
-
-
-    <div class="min-info">
-
-      Minimum withdrawal:
-      <strong id="minimumText">
-        500 NX Coins
-      </strong>
-
-      <br>
-
-      Enter the correct BSC wallet address.
-      Withdrawals cannot be reversed after processing.
-
-    </div>
-
-
-    <button
-      class="withdraw-btn"
-      id="withdrawBtn"
-      type="button"
-      onclick="requestWithdrawal()"
-    >
-      Continue
-    </button>
-
-  </section>
-
-
-  <div
-    class="section-head"
-    style="margin-top:25px;"
-  >
-    <h2>Withdrawal History</h2>
-    <span>Recent</span>
-  </div>
-
-
-  <div
-    id="historyList"
-    class="history-list"
-  >
-    <div class="empty">
-      No withdrawals yet.
-    </div>
-  </div>
+<div id="historyList" class="history-list">
+<div class="empty">No withdrawals yet.</div>
+</div>
 
 </main>
 
 </div>
 
 
-<!-- BOTTOM NAV -->
-
 <nav class="bottom-nav">
 
-  <button
-    class="nav-btn active"
-    id="navHome"
-    type="button"
-    onclick="openPage('home')"
-  >
-    <span class="nav-icon">⌂</span>
-    Home
-  </button>
+<button class="nav-btn active" id="navHome" onclick="openPage('home')">
+<span class="nav-icon">⌂</span>
+Home
+</button>
 
+<button class="nav-btn" id="navEarn" onclick="openPage('earn')">
+<span class="nav-icon">⚡</span>
+Earn
+</button>
 
-  <button
-    class="nav-btn"
-    id="navEarn"
-    type="button"
-    onclick="openPage('earn')"
-  >
-    <span class="nav-icon">⚡</span>
-    Earn
-  </button>
+<button class="nav-btn" id="navReferral" onclick="openPage('referral')">
+<span class="nav-icon">👥</span>
+Refer
+</button>
 
-
-  <button
-    class="nav-btn"
-    id="navReferral"
-    type="button"
-    onclick="openPage('referral')"
-  >
-    <span class="nav-icon">👥</span>
-    Refer
-  </button>
-
-
-  <button
-    class="nav-btn"
-    id="navWallet"
-    type="button"
-    onclick="openPage('wallet')"
-  >
-    <span class="nav-icon">◈</span>
-    Withdraw
-  </button>
+<button class="nav-btn" id="navWallet" onclick="openPage('wallet')">
+<span class="nav-icon">◈</span>
+Withdraw
+</button>
 
 </nav>
 
 
-<!-- WITHDRAW MODAL -->
+<div class="modal-overlay" id="confirmModal">
 
-<div
-  class="modal-overlay"
-  id="confirmModal"
->
+<div class="modal">
 
-  <div class="modal">
+<div class="modal-title">
+Confirm Withdrawal
+</div>
 
-    <div class="modal-title">
-      Confirm Withdrawal
-    </div>
+<div class="modal-subtitle">
+Please check the details carefully before submitting.
+</div>
 
-    <div class="modal-subtitle">
-      Please check the details carefully before submitting your withdrawal.
-    </div>
+<div class="confirm-box">
 
+<div class="confirm-row">
+<div class="confirm-label">Network</div>
+<div class="confirm-value">BNB Smart Chain</div>
+</div>
 
-    <div class="confirm-box">
+<div class="confirm-row">
 
-      <div class="confirm-row">
+<div class="confirm-label">Amount</div>
 
-        <div class="confirm-label">
-          Network
-        </div>
+<div>
 
-        <div class="confirm-value">
-          BNB Smart Chain
-        </div>
+<div class="confirm-value" id="confirmAmount">
+0 NX Coins
+</div>
 
-      </div>
+<div class="usdt-note" id="confirmUsdt">
+≈ 0 USDT
+</div>
 
+</div>
 
-      <div class="confirm-row">
+</div>
 
-        <div class="confirm-label">
-          Amount
-        </div>
+<div class="confirm-row">
 
-        <div
-          class="confirm-value"
-          id="confirmAmount"
-        >
-          0 NX Coins
-        </div>
+<div class="confirm-label">Wallet</div>
 
-      </div>
+<div class="confirm-value" id="confirmWallet">
+—
+</div>
 
+</div>
 
-      <div class="confirm-row">
+</div>
 
-        <div class="confirm-label">
-          Wallet
-        </div>
+<div class="modal-subtitle">
+NX Coins are converted to USDT at withdrawal.
+</div>
 
-        <div
-          class="confirm-value"
-          id="confirmWallet"
-        >
-          —
-        </div>
+<div class="modal-actions">
 
-      </div>
+<button class="cancel-btn" onclick="closeWithdrawModal()">
+Cancel
+</button>
 
-    </div>
+<button class="primary-btn" onclick="submitWithdrawal()">
+Confirm
+</button>
 
+</div>
 
-    <div class="modal-actions">
-
-      <button
-        class="cancel-btn"
-        type="button"
-        onclick="closeWithdrawModal()"
-      >
-        Cancel
-      </button>
-
-
-      <button
-        class="primary-btn"
-        type="button"
-        onclick="submitWithdrawal()"
-      >
-        Confirm
-      </button>
-
-    </div>
-
-  </div>
+</div>
 
 </div>
 
 
-<div
-  class="toast"
-  id="toast"
-></div>
+<div class="toast" id="toast"></div>
 
 
 <script>
 
 /* =========================================================
-   CENTRAL CONFIG
-========================================================= */
-
-const CONFIG = {
-
-  APP_NAME:
-    "NX Coin",
-
-  BOT_USERNAME:
-    "NXCoinRobot",
-
-  API_BASE:
-    "https://usdtbot-production-89e9.up.railway.app",
-
-  STARTING_BALANCE:
-    500,
-
-  TASK_REWARD:
-    50,
-
-  REFERRAL_REWARD:
-    100,
-
-  MIN_WITHDRAWAL:
-    500,
-
-  TASK_COOLDOWN_HOURS:
-    24
-
-};
-
-
-/* =========================================================
-   TELEGRAM
+   FAST INITIALIZATION
 ========================================================= */
 
 const tg =
-  window.Telegram?.WebApp;
+window.Telegram?.WebApp || null;
 
-if (tg) {
+if(tg){
 
-  tg.ready();
-
-  tg.expand();
-
-  try {
-
-    tg.setHeaderColor(
-      "#080b12"
-    );
-
-    tg.setBackgroundColor(
-      "#080b12"
-    );
-
-  } catch {}
+try{
+tg.ready();
+tg.expand();
+tg.setHeaderColor("#080b12");
+tg.setBackgroundColor("#080b12");
+}catch(e){}
 
 }
+
+
+/* =========================================================
+   CONFIG
+========================================================= */
+
+const CONFIG={
+
+APP_NAME:"NX Coin",
+
+BOT_USERNAME:"NXCoinRobot",
+
+API_BASE:"https://usdtbot-production-89e9.up.railway.app",
+
+STARTING_BALANCE:500,
+
+TASK_REWARD:50,
+
+REFERRAL_REWARD:100,
+
+MIN_WITHDRAWAL:500,
+
+TASK_COOLDOWN_HOURS:24,
+
+NX_PER_USDT:10000
+
+};
 
 
 /* =========================================================
    STATE
 ========================================================= */
 
-let state = {
+let state={
 
-  balance:
-    CONFIG.STARTING_BALANCE,
+balance:CONFIG.STARTING_BALANCE,
 
-  referrals:
-    0,
+referrals:0,
 
-  referralReward:
-    0,
+referralReward:0,
 
-  minWithdrawal:
-    CONFIG.MIN_WITHDRAWAL,
+tasks:[],
 
-  taskCooldownHours:
-    CONFIG.TASK_COOLDOWN_HOURS,
+payouts:[],
 
-  tasks:
-    [],
-
-  payouts:
-    [],
-
-  user:
-    null
+user:null
 
 };
 
+let openedTasks=new Set();
 
-let pendingWithdrawal = {
-  wallet: "",
-  amount: 0
+let cooldowns={};
+
+/*
+ Telegram tasks are ONE-TIME tasks.
+ Their completed state is kept separately.
+*/
+let telegramDone={};
+
+let cooldownTimer=null;
+
+let pendingWithdrawal={
+wallet:"",
+amount:0
 };
+
+
+/* =========================================================
+   TELEGRAM DONE STORAGE
+========================================================= */
+
+function telegramDoneKey(id){
+
+return "nx_telegram_done_"+Number(id);
+
+}
+
+
+function isTelegramDone(id){
+
+return telegramDone[Number(id)]===true;
+
+}
+
+
+function markTelegramDone(id){
+
+const taskId=Number(id);
+
+telegramDone[taskId]=true;
+
+localStorage.setItem(
+telegramDoneKey(taskId),
+"1"
+);
+
+}
+
+
+function loadTelegramDone(){
+
+telegramDone={};
+
+if(!state.tasks.length)
+return;
+
+state.tasks.forEach(task=>{
+
+if(task.type!=="telegram")
+return;
+
+const value=
+localStorage.getItem(
+telegramDoneKey(task.id)
+);
+
+if(value==="1"){
+
+telegramDone[Number(task.id)]=true;
+
+}
+
+});
+
+}
+
+
+/* =========================================================
+   IMMEDIATE UI
+========================================================= */
+
+function immediateUI(){
+
+document.getElementById("appName").textContent=
+CONFIG.APP_NAME;
+
+document.getElementById("balance").textContent=
+CONFIG.STARTING_BALANCE.toLocaleString();
+
+document.getElementById("totalEarned").textContent=
+CONFIG.STARTING_BALANCE.toLocaleString();
+
+document.getElementById("availableBalance").textContent=
+CONFIG.STARTING_BALANCE.toLocaleString()+" NX Coins";
+
+const user=
+tg?.initDataUnsafe?.user;
+
+if(user){
+
+document.getElementById("avatar").textContent=
+(
+user.first_name ||
+user.username ||
+"N"
+).charAt(0).toUpperCase();
+
+buildReferralLink();
+
+}
+
+}
 
 
 /* =========================================================
    API
 ========================================================= */
 
-function initData() {
+function getInitData(){
 
-  return tg?.initData || "";
+return tg?.initData || "";
 
 }
 
 
-async function api(
-  path,
-  options = {}
-) {
+async function api(path,options={}){
 
-  const headers = {
+const response=
+await fetch(
+CONFIG.API_BASE+path,
+{
 
-    "Content-Type":
-      "application/json",
+...options,
 
-    "X-Telegram-Init-Data":
-      initData(),
+headers:{
+"Content-Type":"application/json",
 
-    ...(options.headers || {})
+"X-Telegram-Init-Data":
+getInitData(),
 
-  };
+...(options.headers||{})
+}
 
+}
+);
 
-  const response =
-    await fetch(
-      CONFIG.API_BASE + path,
-      {
-        ...options,
-        headers
-      }
-    );
+let data=null;
 
+try{
+data=await response.json();
+}catch(e){}
 
-  let data = null;
+if(!response.ok){
 
-  try {
+const error=
+new Error(
+data?.message||
+data?.error||
+data?.reason||
+"Request failed"
+);
 
-    data =
-      await response.json();
+error.data=data;
 
-  } catch {}
+throw error;
 
+}
 
-  if (!response.ok) {
-
-    const error =
-      new Error(
-        data?.message ||
-        data?.error ||
-        data?.reason ||
-        "Request failed"
-      );
-
-    error.data =
-      data;
-
-    throw error;
-
-  }
-
-
-  return data;
+return data;
 
 }
 
 
 /* =========================================================
-   TELEGRAM USER
+   YOUTUBE COOLDOWN ONLY
 ========================================================= */
 
-function getTelegramUser() {
+function cooldownKey(id){
 
-  return (
-    tg?.initDataUnsafe?.user ||
-    null
-  );
+return "nx_task_cd_"+Number(id);
 
 }
 
 
-function setupUser() {
+function saveCooldown(id,next){
 
-  const user =
-    getTelegramUser();
+const task=
+state.tasks.find(
+x=>Number(x.id)===Number(id)
+);
 
-  let initials =
-    "N";
+if(!task)
+return;
 
+/*
+ IMPORTANT:
+ Telegram tasks NEVER get cooldown.
+*/
+if(task.type==="telegram")
+return;
 
-  if (user) {
+const time=
+new Date(next).getTime();
 
-    initials =
-      (
-        (user.first_name || "")
-          .charAt(0) +
+if(!Number.isFinite(time))
+return;
 
-        (user.last_name || "")
-          .charAt(0)
-      ).toUpperCase();
+localStorage.setItem(
+cooldownKey(id),
+String(time)
+);
 
+cooldowns[Number(id)]=time;
 
-    if (!initials) {
-
-      initials =
-        (
-          user.username ||
-          "N"
-        )
-          .charAt(0)
-          .toUpperCase();
-
-    }
-
-
-    const link =
-      `https://t.me/${CONFIG.BOT_USERNAME}?start=ref_${user.id}`;
+}
 
 
-    document.getElementById(
-      "referralInput"
-    ).value =
-      link;
+function loadCooldowns(){
+
+cooldowns={};
+
+state.tasks.forEach(task=>{
+
+/*
+ Telegram tasks never load cooldown.
+*/
+if(task.type==="telegram"){
+
+localStorage.removeItem(
+cooldownKey(task.id)
+);
+
+return;
+
+}
+
+const raw=
+localStorage.getItem(
+cooldownKey(task.id)
+);
+
+if(!raw)
+return;
+
+const time=Number(raw);
+
+if(
+!Number.isFinite(time)||
+time<=Date.now()
+){
+
+localStorage.removeItem(
+cooldownKey(task.id)
+);
+
+return;
+
+}
+
+cooldowns[Number(task.id)]=time;
+
+});
+
+}
 
 
-    document.getElementById(
-      "referralInput2"
-    ).value =
-      link;
+function remaining(id){
 
-  }
+const task=
+state.tasks.find(
+x=>Number(x.id)===Number(id)
+);
+
+/*
+ Telegram tasks have NO cooldown.
+*/
+if(task?.type==="telegram")
+return 0;
+
+const time=
+Number(cooldowns[Number(id)]||0);
+
+if(!time||time<=Date.now())
+return 0;
+
+return time-Date.now();
+
+}
 
 
-  document.getElementById(
-    "avatar"
-  ).textContent =
-    initials.substring(
-      0,
-      2
-    );
+function formatCooldown(ms){
+
+const seconds=
+Math.max(
+0,
+Math.floor(ms/1000)
+);
+
+const hours=
+Math.floor(seconds/3600);
+
+const minutes=
+Math.floor(
+(seconds%3600)/60
+);
+
+return (
+String(hours).padStart(2,"0")+
+"h "+
+String(minutes).padStart(2,"0")+
+"m"
+);
+
+}
+
+
+function startCooldownTimer(){
+
+clearInterval(cooldownTimer);
+
+cooldownTimer=
+setInterval(()=>{
+
+let changed=false;
+
+Object.keys(cooldowns).forEach(id=>{
+
+if(
+remaining(id)<=0
+){
+
+delete cooldowns[Number(id)];
+
+localStorage.removeItem(
+cooldownKey(id)
+);
+
+changed=true;
+
+}
+
+});
+
+if(
+document.getElementById("earnPage")
+.classList.contains("active")
+){
+
+renderTasks();
+
+}
+
+},1000);
 
 }
 
@@ -963,261 +963,163 @@ function setupUser() {
    SYNC
 ========================================================= */
 
-async function sync() {
+async function sync(){
 
-  const data =
-    await api(
-      "/sync",
-      {
-        method:
-          "POST",
+try{
 
-        body:
-          JSON.stringify({})
-      }
-    );
-
-
-  state.balance =
-    Number(
-      data.balance || 0
-    );
+const data=
+await api(
+"/sync",
+{
+method:"POST",
+body:"{}"
+}
+);
 
 
-  state.referrals =
-    Number(
-      data.referrals || 0
-    );
+state.balance=
+Number(
+data.balance||0
+);
+
+state.referrals=
+Number(
+data.referrals||0
+);
+
+state.referralReward=
+Number(
+data.referralReward||0
+);
+
+state.tasks=
+Array.isArray(data.tasks)
+?data.tasks
+:[];
+
+state.payouts=
+Array.isArray(data.payouts)
+?data.payouts
+:[];
+
+state.user=
+data.user||null;
 
 
-  state.referralReward =
-    Number(
-      data.referralReward || 0
-    );
+/*
+ Load YouTube cooldowns.
+*/
+loadCooldowns();
 
+/*
+ Load permanent Telegram Done states.
+*/
+loadTelegramDone();
 
-  state.minWithdrawal =
-    Number(
-      data.minWithdrawal ||
-      CONFIG.MIN_WITHDRAWAL
-    );
+renderState();
 
+renderTasks();
 
-  state.taskCooldownHours =
-    Number(
-      data.taskCooldownHours ||
-      CONFIG.TASK_COOLDOWN_HOURS
-    );
+renderHistory();
 
+buildReferralLink();
 
-  /*
-    IMPORTANT:
+startCooldownTimer();
 
-    Task status comes from Supabase
-    through backend /sync.
+}catch(error){
 
-    Example:
+console.error(
+"Background sync:",
+error
+);
 
-    {
-      claimed: true,
-      nextClaimAt: "..."
-    }
+showToast(
+"Unable to sync account."
+);
 
-    Therefore closing/reopening the
-    Mini App does NOT reset tasks.
-  */
-
-  state.tasks =
-    Array.isArray(data.tasks)
-      ? data.tasks
-      : [];
-
-
-  state.payouts =
-    Array.isArray(data.payouts)
-      ? data.payouts
-      : [];
-
-
-  state.user =
-    data.user ||
-    null;
-
-
-  renderState();
-
-  renderTasks();
-
-  renderHistory();
+}
 
 }
 
 
 /* =========================================================
-   STATE UI
+   STATE
 ========================================================= */
 
-function renderState() {
+function renderState(){
 
-  document.getElementById(
-    "balance"
-  ).textContent =
-    state.balance.toLocaleString();
+document.getElementById("balance").textContent=
+state.balance.toLocaleString();
 
+document.getElementById("totalEarned").textContent=
+state.balance.toLocaleString();
 
-  document.getElementById(
-    "totalEarned"
-  ).textContent =
-    state.balance.toLocaleString();
+document.getElementById("referrals").textContent=
+state.referrals.toLocaleString();
 
+document.getElementById("referralCount").textContent=
+state.referrals.toLocaleString();
 
-  document.getElementById(
-    "referrals"
-  ).textContent =
-    state.referrals.toLocaleString();
+document.getElementById("referralEarned").textContent=
+state.referralReward.toLocaleString();
 
-
-  document.getElementById(
-    "referralCount"
-  ).textContent =
-    state.referrals.toLocaleString();
-
-
-  document.getElementById(
-    "referralEarned"
-  ).textContent =
-    state.referralReward.toLocaleString();
-
-
-  document.getElementById(
-    "referralRewardValue"
-  ).textContent =
-    CONFIG.REFERRAL_REWARD.toLocaleString();
-
-
-  document.getElementById(
-    "cooldownText"
-  ).textContent =
-    state.taskCooldownHours +
-    "h";
-
-
-  document.getElementById(
-    "availableBalance"
-  ).textContent =
-    state.balance.toLocaleString() +
-    " NX Coins";
-
-
-  document.getElementById(
-    "minimumText"
-  ).textContent =
-    state.minWithdrawal.toLocaleString() +
-    " NX Coins";
-
-
-  document.getElementById(
-    "withdrawAmount"
-  ).min =
-    state.minWithdrawal;
+document.getElementById("availableBalance").textContent=
+state.balance.toLocaleString()+" NX Coins";
 
 }
 
 
 /* =========================================================
-   NAV
+   NAVIGATION
 ========================================================= */
 
-function openPage(name) {
+function openPage(page){
 
-  const pages = {
+const pages=[
+"home",
+"earn",
+"referral",
+"wallet"
+];
 
-    home:
-      "homePage",
+pages.forEach(name=>{
 
-    earn:
-      "earnPage",
+document
+.getElementById(name+"Page")
+.classList.toggle(
+"active",
+name===page
+);
 
-    referral:
-      "referralPage",
-
-    wallet:
-      "walletPage"
-
-  };
-
-
-  const navs = {
-
-    home:
-      "navHome",
-
-    earn:
-      "navEarn",
-
-    referral:
-      "navReferral",
-
-    wallet:
-      "navWallet"
-
-  };
+});
 
 
-  Object.values(
-    pages
-  ).forEach(
-    id =>
-      document
-        .getElementById(id)
-        ?.classList
-        .remove("active")
-  );
+const navs={
+home:"navHome",
+earn:"navEarn",
+referral:"navReferral",
+wallet:"navWallet"
+};
 
+Object.values(navs).forEach(id=>{
 
-  Object.values(
-    navs
-  ).forEach(
-    id =>
-      document
-        .getElementById(id)
-        ?.classList
-        .remove("active")
-  );
+document
+.getElementById(id)
+.classList.remove("active");
 
+});
 
-  document
-    .getElementById(
-      pages[name]
-    )
-    ?.classList
-    .add("active");
+document
+.getElementById(navs[page])
+.classList.add("active");
 
+window.scrollTo(0,0);
 
-  document
-    .getElementById(
-      navs[name]
-    )
-    ?.classList
-    .add("active");
+if(page==="earn")
+renderTasks();
 
-
-  window.scrollTo({
-    top:
-      0,
-    behavior:
-      "smooth"
-  });
-
-
-  if (
-    name ===
-    "wallet"
-  ) {
-
-    loadWithdrawalHistory();
-
-  }
+if(page==="wallet")
+loadHistory();
 
 }
 
@@ -1226,678 +1128,428 @@ function openPage(name) {
    TASKS
 ========================================================= */
 
-function taskIcon(
-  task
-) {
+function renderTasks(){
 
-  return task.type ===
-    "telegram"
-    ? "📢"
-    : "▶️";
+const list=
+document.getElementById("taskList");
 
-}
+if(!state.tasks.length){
 
+list.innerHTML=
+`<div class="empty">Loading tasks...</div>`;
 
-/* =========================================================
-   RENDER TASKS
-========================================================= */
-
-function renderTasks() {
-
-  const list =
-    document.getElementById(
-      "taskList"
-    );
-
-
-  if (
-    !state.tasks.length
-  ) {
-
-    list.innerHTML =
-      `<div class="empty">No tasks available.</div>`;
-
-    return;
-
-  }
-
-
-  list.innerHTML =
-    state.tasks
-      .map(
-        task => {
-
-          const isClaimed =
-            Boolean(
-              task.claimed
-            );
-
-
-          const isTelegram =
-            task.type ===
-            "telegram";
-
-
-          const nextClaimAt =
-            task.nextClaimAt
-              ? new Date(
-                  task.nextClaimAt
-                ).getTime()
-              : 0;
-
-
-          const cooldownActive =
-            !isTelegram &&
-            isClaimed &&
-            nextClaimAt >
-              Date.now();
-
-
-          let buttonText =
-            "Watch & Claim";
-
-
-          let buttonClass =
-            "primary";
-
-
-          let disabled =
-            false;
-
-
-          if (
-            isTelegram &&
-            isClaimed
-          ) {
-
-            buttonText =
-              "✓ Done";
-
-            buttonClass =
-              "success";
-
-            disabled =
-              true;
-
-          } else if (
-            cooldownActive
-          ) {
-
-            buttonText =
-              formatRemaining(
-                nextClaimAt
-              );
-
-            buttonClass =
-              "success";
-
-            disabled =
-              true;
-
-          }
-
-
-          return `
-
-            <div class="task">
-
-              <div class="task-icon">
-                ${taskIcon(task)}
-              </div>
-
-
-              <div class="task-info">
-
-                <div class="task-title">
-                  ${escapeHtml(
-                    task.title ||
-                    "Task"
-                  )}
-                </div>
-
-
-                <div class="task-reward">
-                  +${Number(
-                    task.reward ||
-                    50
-                  ).toLocaleString()}
-                  NX Coins
-                </div>
-
-              </div>
-
-
-              <button
-                id="taskBtn${Number(
-                  task.id
-                )}"
-                class="task-btn ${buttonClass}"
-                type="button"
-                ${
-                  disabled
-                    ? "disabled"
-                    : ""
-                }
-                onclick="handleTask(${Number(
-                  task.id
-                )})"
-              >
-
-                ${buttonText}
-
-              </button>
-
-            </div>
-
-          `;
-
-        }
-      )
-      .join("");
-
-
-  updateTaskCountdowns();
+return;
 
 }
 
 
-/* =========================================================
-   COOLDOWN FORMAT
-========================================================= */
+list.innerHTML=
+state.tasks.map(task=>{
 
-function formatRemaining(
-  timestamp
-) {
+const id=Number(task.id);
 
-  const diff =
-    Math.max(
-      0,
-      Number(timestamp) -
-        Date.now()
-    );
+const telegram=
+task.type==="telegram";
 
+/*
+ YouTube only:
+ 24h cooldown.
 
-  if (
-    diff <= 0
-  ) {
+ Telegram:
+ permanent Done.
+*/
+const left=
+telegram?0:remaining(id);
 
-    return "Watch & Claim";
+const cooldown=
+!telegram && left>0;
 
-  }
+const done=
+telegram && isTelegramDone(id);
 
+const opened=
+openedTasks.has(id);
 
-  const totalSeconds =
-    Math.ceil(
-      diff /
-      1000
-    );
+let text=
+telegram?"Join":"Watch";
 
+let cls="";
 
-  const hours =
-    Math.floor(
-      totalSeconds /
-      3600
-    );
+if(done){
 
+text="✓ Done";
+cls="success";
 
-  const minutes =
-    Math.floor(
-      (
-        totalSeconds %
-        3600
-      ) /
-      60
-    );
+}else if(cooldown){
 
+text=formatCooldown(left);
+cls="cooldown";
 
-  const seconds =
-    totalSeconds %
-    60;
+}else if(opened){
 
+text="Claim "+
+Number(task.reward||50)+
+" NX";
 
-  if (
-    hours > 0
-  ) {
-
-    return `${hours}h ${String(
-      minutes
-    ).padStart(
-      2,
-      "0"
-    )}m`;
-
-  }
-
-
-  return `${minutes}m ${String(
-    seconds
-  ).padStart(
-    2,
-    "0"
-  )}s`;
+cls="primary";
 
 }
 
+return `
 
-/* =========================================================
-   LIVE COOLDOWN
-========================================================= */
+<div class="task">
 
-function updateTaskCountdowns() {
+<div class="task-icon">
+${telegram?"📢":"▶️"}
+</div>
 
-  state.tasks.forEach(
-    task => {
+<div class="task-info">
 
-      if (
-        task.type ===
-          "telegram" ||
-        !task.claimed ||
-        !task.nextClaimAt
-      ) {
+<div class="task-title">
+${escapeHtml(task.title||"Task")}
+</div>
 
-        return;
+<div class="task-reward">
++${Number(task.reward||50).toLocaleString()} NX Coins
+</div>
 
-      }
+</div>
 
+<button
+class="task-btn ${cls}"
+onclick="taskAction(${id})"
+${cooldown||done?"disabled":""}
+>
+${text}
+</button>
 
-      const button =
-        document.getElementById(
-          `taskBtn${Number(
-            task.id
-          )}`
-        );
+</div>
 
+`;
 
-      if (!button) {
-        return;
-      }
-
-
-      const timestamp =
-        new Date(
-          task.nextClaimAt
-        ).getTime();
-
-
-      if (
-        timestamp <=
-        Date.now()
-      ) {
-
-        task.claimed =
-          false;
-
-        task.nextClaimAt =
-          null;
-
-
-        button.disabled =
-          false;
-
-
-        button.className =
-          "task-btn primary";
-
-
-        button.textContent =
-          "Watch & Claim";
-
-
-        button.dataset.readyToClaim =
-          "";
-
-
-        return;
-
-      }
-
-
-      button.disabled =
-        true;
-
-
-      button.className =
-        "task-btn success";
-
-
-      button.textContent =
-        formatRemaining(
-          timestamp
-        );
-
-    }
-  );
+}).join("");
 
 }
-
-
-setInterval(
-  updateTaskCountdowns,
-  1000
-);
 
 
 /* =========================================================
    TASK ACTION
 ========================================================= */
 
-function handleTask(
-  taskId
-) {
+function taskAction(id){
 
-  const task =
-    state.tasks.find(
-      x =>
-        Number(x.id) ===
-        Number(taskId)
-    );
+const task=
+state.tasks.find(
+x=>Number(x.id)===Number(id)
+);
 
-
-  if (!task) {
-    return;
-  }
+if(!task)
+return;
 
 
-  if (
-    task.type ===
-      "telegram" &&
-    task.claimed
-  ) {
+/*
+ Telegram task already completed.
+*/
+if(
+task.type==="telegram" &&
+isTelegramDone(id)
+){
 
-    return;
+showToast("✓ Task already completed.");
 
-  }
+return;
 
-
-  if (
-    task.type !==
-      "telegram" &&
-    task.claimed &&
-    task.nextClaimAt &&
-    new Date(
-      task.nextClaimAt
-    ).getTime() >
-      Date.now()
-  ) {
-
-    return;
-
-  }
+}
 
 
-  const button =
-    document.getElementById(
-      `taskBtn${taskId}`
-    );
+/*
+ Cooldown applies ONLY to YouTube.
+*/
+if(
+task.type!=="telegram" &&
+remaining(id)>0
+){
+
+showToast(
+"⏳ Available again in "+
+formatCooldown(
+remaining(id)
+)
+);
+
+return;
+
+}
 
 
-  if (
-    button?.dataset.readyToClaim ===
-    "1"
-  ) {
+if(
+openedTasks.has(id)
+){
 
-    claimTask(
-      taskId,
-      button
-    );
+claimTask(id);
 
-    return;
+return;
 
-  }
+}
 
 
-  if (task.url) {
+openedTasks.add(id);
 
-    try {
+if(
+task.type==="telegram"
+){
 
-      if (
-        task.type ===
-          "telegram" &&
-        tg?.openTelegramLink
-      ) {
+openTelegramTask(task);
 
-        tg.openTelegramLink(
-          task.url
-        );
+}else{
 
-      } else if (
-        tg?.openLink
-      ) {
+openYoutubeTask(task);
 
-        tg.openLink(
-          task.url
-        );
+}
 
-      } else {
+renderTasks();
 
-        window.open(
-          task.url,
-          "_blank"
-        );
-
-      }
-
-    } catch {
-
-      window.open(
-        task.url,
-        "_blank"
-      );
-
-    }
-
-  }
+}
 
 
-  if (button) {
+function openYoutubeTask(task){
 
-    button.dataset.readyToClaim =
-      "1";
+if(!task.url)
+return;
 
-    button.textContent =
-      "Claim 50 NX";
+if(
+tg &&
+typeof tg.openLink==="function"
+){
 
-  }
+tg.openLink(task.url);
+
+}else{
+
+window.open(
+task.url,
+"_blank"
+);
+
+}
+
+}
 
 
-  if (
-    task.type ===
-    "telegram"
-  ) {
+function openTelegramTask(task){
 
-    showToast(
-      `Join ${
-        task.channel ||
-        "the channel"
-      } first, then tap Claim 50 NX.`
-    );
+const url=
+task.url||
+(
+"https://t.me/"+
+String(
+task.channel||""
+).replace("@","")
+);
 
-  } else {
+if(
+tg &&
+typeof tg.openTelegramLink==="function"
+){
 
-    showToast(
-      "Watch the video, then tap Claim 50 NX."
-    );
+tg.openTelegramLink(url);
 
-  }
+}else{
+
+window.open(url,"_blank");
+
+}
 
 }
 
 
 /* =========================================================
-   CLAIM TASK
+   CLAIM
 ========================================================= */
 
-async function claimTask(
-  taskId,
-  button
-) {
+async function claimTask(id){
 
-  if (button) {
+const task=
+state.tasks.find(
+x=>Number(x.id)===Number(id)
+);
 
-    button.disabled =
-      true;
+if(!task)
+return;
 
-    button.textContent =
-      "Checking...";
+const telegram=
+task.type==="telegram";
 
-  }
+try{
 
-
-  try {
-
-    const result =
-      await api(
-        "/earn",
-        {
-          method:
-            "POST",
-
-          body:
-            JSON.stringify({
-              taskId:
-                Number(taskId)
-            })
-
-        }
-      );
+const result=
+await api(
+"/earn",
+{
+method:"POST",
+body:JSON.stringify({
+taskId:id
+})
+}
+);
 
 
-    state.balance =
-      Number(
-        result.balance ||
-        state.balance
-      );
+state.balance=
+Number(
+result.balance||
+state.balance
+);
 
 
-    const task =
-      state.tasks.find(
-        x =>
-          Number(x.id) ===
-          Number(taskId)
-      );
+openedTasks.delete(id);
 
 
-    if (task) {
+/*
+ TELEGRAM:
+ One-time task.
+ No cooldown.
+ Permanently mark Done.
+*/
+if(telegram){
 
-      task.claimed =
-        Boolean(
-          result.claimed
-        );
+markTelegramDone(id);
 
-      task.nextClaimAt =
-        result.nextClaimAt ||
-        null;
+renderState();
+renderTasks();
 
-    }
+showToast(
+"🎉 +"+
+Number(result.reward||50)+
+" NX Coins added!"
+);
 
+return;
 
-    renderState();
-
-    renderTasks();
-
-
-    showToast(
-      `🎉 +${Number(
-        result.reward ||
-        50
-      ).toLocaleString()} NX Coins added!`
-    );
+}
 
 
-  } catch (
-    error
-  ) {
-
-    if (button) {
-
-      button.disabled =
-        false;
-
-      button.textContent =
-        "Claim 50 NX";
-
-      button.dataset.readyToClaim =
-        "1";
-
-    }
+/*
+ YOUTUBE:
+ 24h cooldown.
+*/
+saveCooldown(
+id,
+result.nextClaimAt||
+result.next_claim_at||
+(
+Date.now()+
+CONFIG.TASK_COOLDOWN_HOURS*
+60*60*1000
+)
+);
 
 
-    const d =
-      error.data ||
-      {};
+renderState();
+renderTasks();
+
+showToast(
+"🎉 +"+
+Number(result.reward||50)+
+" NX Coins added!"
+);
 
 
-    if (
-      d.error ===
-        "CHANNEL_NOT_JOINED" ||
-      d.reason ===
-        "CHANNEL_NOT_JOINED"
-    ) {
+}catch(error){
 
-      showToast(
-        `❌ Join ${
-          d.channel ||
-          "the channel"
-        } first, then try again.`
-      );
+openedTasks.delete(id);
 
-      return;
-
-    }
+const data=
+error.data||{};
 
 
-    if (
-      d.reason ===
-      "COOLDOWN"
-    ) {
+/*
+ Telegram task:
+ Backend says already claimed.
+ Mark Done locally.
+*/
+if(
+telegram &&
+(
+data.reason==="ALREADY_CLAIMED" ||
+data.reason==="TASK_ALREADY_CLAIMED"
+)
+){
 
-      await sync();
+markTelegramDone(id);
 
-      showToast(
-        "⏳ This task can be claimed again after 24 hours."
-      );
+renderTasks();
 
-      return;
+showToast(
+"✓ Task already completed."
+);
 
-    }
+return;
 
-
-    if (
-      d.reason ===
-      "ALREADY_CLAIMED"
-    ) {
-
-      await sync();
-
-      showToast(
-        "✓ This task has already been completed."
-      );
-
-      return;
-
-    }
+}
 
 
-    if (
-      d.reason ===
-      "INVALID_TASK"
-    ) {
-
-      showToast(
-        "This task is unavailable."
-      );
-
-      return;
-
-    }
+renderTasks();
 
 
-    showToast(
-      error.message ||
-      "Unable to claim task."
-    );
+if(
+data.reason==="CHANNEL_NOT_JOINED"
+){
 
-  }
+showToast(
+"❌ Please join "+
+(
+data.channel||
+"the channel"
+)+
+" first."
+);
+
+return;
+
+}
+
+
+/*
+ Cooldown is only relevant for YouTube.
+*/
+if(
+!telegram &&
+data.reason==="COOLDOWN"
+){
+
+if(data.next_claim_at){
+
+saveCooldown(
+id,
+data.next_claim_at
+);
+
+}else if(data.nextClaimAt){
+
+saveCooldown(
+id,
+data.nextClaimAt
+);
+
+}
+
+renderTasks();
+
+showToast(
+"⏳ Task is still on cooldown."
+);
+
+return;
+
+}
+
+
+showToast(
+error.message||
+"Unable to claim task."
+);
+
+}
 
 }
 
@@ -1906,94 +1558,96 @@ async function claimTask(
    REFERRAL
 ========================================================= */
 
-async function copyReferral() {
+function buildReferralLink(){
 
-  const input =
-    document.getElementById(
-      "referralInput"
-    );
+const user=
+tg?.initDataUnsafe?.user;
 
+if(!user?.id)
+return;
 
-  if (!input?.value) {
-    return;
-  }
+const link=
+"https://t.me/"+
+CONFIG.BOT_USERNAME+
+"?start=ref_"+
+user.id;
 
+document.getElementById(
+"referralInput"
+).value=link;
 
-  try {
-
-    await navigator.clipboard.writeText(
-      input.value
-    );
-
-    showToast(
-      "Referral link copied."
-    );
-
-  } catch {
-
-    input.select();
-
-    document.execCommand(
-      "copy"
-    );
-
-    showToast(
-      "Referral link copied."
-    );
-
-  }
+document.getElementById(
+"referralInput2"
+).value=link;
 
 }
 
 
-function shareReferral() {
+async function copyReferral(){
 
-  const input =
-    document.getElementById(
-      "referralInput"
-    );
+const input=
+document.getElementById(
+"referralInput"
+);
+
+if(!input?.value)
+return;
+
+try{
+
+await navigator.clipboard.writeText(
+input.value
+);
+
+showToast(
+"Referral link copied."
+);
+
+}catch{
+
+input.select();
+
+document.execCommand("copy");
+
+showToast(
+"Referral link copied."
+);
+
+}
+
+}
 
 
-  if (!input?.value) {
-    return;
-  }
+function shareReferral(){
 
+const input=
+document.getElementById(
+"referralInput"
+);
 
-  const url =
-    `https://t.me/share/url?url=${encodeURIComponent(
-      input.value
-    )}&text=${encodeURIComponent(
-      "Join NX Coin and start earning NX Coins! 🚀"
-    )}`;
+if(!input?.value)
+return;
 
+const url=
+"https://t.me/share/url?url="+
+encodeURIComponent(input.value)+
+"&text="+
+encodeURIComponent(
+"Join NX Coin and start earning NX Coins 🚀"
+);
 
-  try {
+if(
+tg &&
+typeof tg.openTelegramLink==="function"
+){
 
-    if (
-      tg?.openTelegramLink
-    ) {
+tg.openTelegramLink(url);
 
-      tg.openTelegramLink(
-        url
-      );
+}else{
 
-    } else {
+window.open(url,"_blank");
 
-      window.open(
-        url,
-        "_blank"
-      );
-
-    }
-
-  } catch {
-
-    window.open(
-      url,
-      "_blank"
-    );
-
-  }
+}
 
 }
 
@@ -2002,283 +1656,213 @@ function shareReferral() {
    WITHDRAW
 ========================================================= */
 
-function isValidBscAddress(
-  address
-) {
+function isValidBscAddress(address){
 
-  return /^0x[a-fA-F0-9]{40}$/.test(
-    address
-  );
+return /^0x[a-fA-F0-9]{40}$/.test(
+address
+);
 
 }
 
 
-function requestWithdrawal() {
+function requestWithdrawal(){
 
-  const wallet =
-    document.getElementById(
-      "walletAddress"
-    ).value.trim();
+const wallet=
+document.getElementById(
+"walletAddress"
+).value.trim();
 
+const amount=
+Number(
+document.getElementById(
+"withdrawAmount"
+).value
+);
 
-  const amount =
-    Number(
-      document.getElementById(
-        "withdrawAmount"
-      ).value
-    );
+if(!wallet){
 
+showToast(
+"Enter your BSC wallet address."
+);
 
-  if (!wallet) {
+return;
 
-    showToast(
-      "Enter your BSC wallet address."
-    );
+}
 
-    return;
+if(
+!isValidBscAddress(wallet)
+){
 
-  }
+showToast(
+"Enter a valid BSC wallet address."
+);
 
+return;
 
-  if (
-    !isValidBscAddress(
-      wallet
-    )
-  ) {
+}
 
-    showToast(
-      "Enter a valid BSC wallet address."
-    );
+if(
+!Number.isInteger(amount)
+){
 
-    return;
+showToast(
+"Enter a valid NX Coin amount."
+);
 
-  }
+return;
 
+}
 
-  if (
-    !Number.isInteger(
-      amount
-    )
-  ) {
+if(
+amount<CONFIG.MIN_WITHDRAWAL
+){
 
-    showToast(
-      "Enter a valid withdrawal amount."
-    );
+showToast(
+"Minimum withdrawal is "+
+CONFIG.MIN_WITHDRAWAL+
+" NX Coins."
+);
 
-    return;
+return;
 
-  }
+}
 
+if(
+amount>state.balance
+){
 
-  if (
-    amount <
-    state.minWithdrawal
-  ) {
+showToast(
+"Insufficient NX Coins."
+);
 
-    showToast(
-      `Minimum withdrawal is ${
-        state.minWithdrawal.toLocaleString()
-      } NX Coins.`
-    );
+return;
 
-    return;
+}
 
-  }
+pendingWithdrawal={
+wallet,
+amount
+};
 
+document.getElementById(
+"confirmAmount"
+).textContent=
+amount.toLocaleString()+
+" NX Coins";
 
-  if (
-    amount >
-    state.balance
-  ) {
+document.getElementById(
+"confirmUsdt"
+).textContent=
+"≈ "+
+(
+amount/CONFIG.NX_PER_USDT
+).toFixed(4)+
+" USDT";
 
-    showToast(
-      "Insufficient NX Coins."
-    );
+document.getElementById(
+"confirmWallet"
+).textContent=
+shortenAddress(wallet);
 
-    return;
-
-  }
-
-
-  pendingWithdrawal = {
-    wallet,
-    amount
-  };
-
-
-  document.getElementById(
-    "confirmAmount"
-  ).textContent =
-    amount.toLocaleString() +
-    " NX Coins";
-
-
-  document.getElementById(
-    "confirmWallet"
-  ).textContent =
-    shortenAddress(
-      wallet
-    );
-
-
-  document.getElementById(
-    "confirmModal"
-  ).classList.add(
-    "show"
-  );
+document.getElementById(
+"confirmModal"
+).classList.add("show");
 
 }
 
 
-function shortenAddress(
-  address
-) {
+function shortenAddress(address){
 
-  return address.length <
-    12
-    ? address
-    : address.substring(
-        0,
-        7
-      ) +
-      "..." +
-      address.substring(
-        address.length -
-          5
-      );
+if(
+!address||
+address.length<12
+)
+return address;
+
+return (
+address.slice(0,7)+
+"..."+
+address.slice(-5)
+);
 
 }
 
 
-function closeWithdrawModal() {
+function closeWithdrawModal(){
 
-  document.getElementById(
-    "confirmModal"
-  ).classList.remove(
-    "show"
-  );
+document.getElementById(
+"confirmModal"
+).classList.remove("show");
 
 }
 
 
-async function submitWithdrawal() {
+async function submitWithdrawal(){
 
-  const {
-    wallet,
-    amount
-  } =
-    pendingWithdrawal;
+if(
+!pendingWithdrawal.wallet||
+!pendingWithdrawal.amount
+){
 
+closeWithdrawModal();
 
-  if (
-    !wallet ||
-    !amount
-  ) {
+return;
 
-    closeWithdrawModal();
+}
 
-    return;
+try{
 
-  }
+const result=
+await api(
+"/payout",
+{
+method:"POST",
 
+body:JSON.stringify({
 
-  const confirmButton =
-    document.querySelector(
-      ".modal .primary-btn"
-    );
+wallet:
+pendingWithdrawal.wallet,
 
+amount:
+pendingWithdrawal.amount
 
-  if (confirmButton) {
+})
+}
+);
 
-    confirmButton.disabled =
-      true;
+closeWithdrawModal();
 
-    confirmButton.textContent =
-      "Processing...";
+showToast(
+result?.payout?.status==="paid"
+?"✅ Withdrawal successful."
+:"⏳ Withdrawal submitted."
+);
 
-  }
+pendingWithdrawal={
+wallet:"",
+amount:0
+};
 
+document.getElementById(
+"walletAddress"
+).value="";
 
-  try {
+document.getElementById(
+"withdrawAmount"
+).value="";
 
-    const result =
-      await api(
-        "/payout",
-        {
-          method:
-            "POST",
+await sync();
 
-          body:
-            JSON.stringify({
-              wallet,
-              amount
-            })
+}catch(error){
 
-        }
-      );
+closeWithdrawModal();
 
+showToast(
+error.message||
+"Withdrawal failed."
+);
 
-    closeWithdrawModal();
-
-
-    document.getElementById(
-      "walletAddress"
-    ).value =
-      "";
-
-
-    document.getElementById(
-      "withdrawAmount"
-    ).value =
-      "";
-
-
-    if (
-      result?.payout?.status ===
-      "paid"
-    ) {
-
-      showToast(
-        "✅ Withdrawal successful."
-      );
-
-    } else {
-
-      showToast(
-        "⏳ Withdrawal submitted."
-      );
-
-    }
-
-
-    await sync();
-
-
-  } catch (
-    error
-  ) {
-
-    closeWithdrawModal();
-
-    showToast(
-      error.message ||
-      "Withdrawal failed."
-    );
-
-
-  } finally {
-
-    if (confirmButton) {
-
-      confirmButton.disabled =
-        false;
-
-      confirmButton.textContent =
-        "Confirm";
-
-    }
-
-  }
+}
 
 }
 
@@ -2287,104 +1871,175 @@ async function submitWithdrawal() {
    HISTORY
 ========================================================= */
 
-async function loadWithdrawalHistory() {
+async function loadHistory(){
 
-  try {
+try{
 
-    const result =
-      await api(
-        "/payouts",
-        {
-          method:
-            "GET"
-        }
-      );
+const result=
+await api(
+"/payouts",
+{
+method:"GET"
+}
+);
 
+state.payouts=
+Array.isArray(result?.payouts)
+?result.payouts
+:[];
 
-    state.payouts =
-      Array.isArray(
-        result?.payouts
-      )
-        ? result.payouts
-        : [];
+renderHistory();
 
+}catch(error){
 
-    renderHistory();
+console.error(
+"History:",
+error
+);
 
-
-  } catch {
-
-    renderHistory();
-
-  }
+}
 
 }
 
 
-function renderHistory() {
+function renderHistory(){
 
-  const container =
-    document.getElementById(
-      "historyList"
-    );
+const box=
+document.getElementById(
+"historyList"
+);
+
+if(
+!state.payouts.length
+){
+
+box.innerHTML=
+`<div class="empty">No withdrawals yet.</div>`;
+
+return;
+
+}
+
+box.innerHTML=
+state.payouts.map(item=>{
+
+const status=
+String(
+item.status||"pending"
+).toLowerCase();
+
+let cls="status-pending";
+
+if(status==="paid")
+cls="status-paid";
+
+if(status==="failed")
+cls="status-failed";
+
+if(status==="processing")
+cls="status-processing";
+
+return `
+
+<div class="history-item">
+
+<div class="history-icon">◈</div>
+
+<div class="history-info">
+
+<div class="history-amount">
+${Number(
+item.amount||0
+).toLocaleString()} NX Coins
+</div>
+
+<div class="history-date">
+${escapeHtml(
+item.createdAt
+?new Date(item.createdAt).toLocaleString()
+:""
+)}
+</div>
+
+</div>
+
+<div class="history-status ${cls}">
+${escapeHtml(status)}
+</div>
+
+</div>
+
+`;
+
+}).join("");
+
+}
 
 
-  if (
-    !state.payouts.length
-  ) {
+/* =========================================================
+   TOAST
+========================================================= */
 
-    container.innerHTML =
-      `<div class="empty">No withdrawals yet.</div>`;
+let toastTimer=null;
 
-    return;
+function showToast(message){
 
-  }
+const toast=
+document.getElementById("toast");
 
+toast.textContent=message;
 
-  container.innerHTML =
-    state.payouts
-      .map(
-        item => {
+toast.classList.add("show");
 
-          const status =
-            String(
-              item.status ||
-              "pending"
-            ).toLowerCase();
+clearTimeout(toastTimer);
 
+toastTimer=
+setTimeout(
+()=>{
+toast.classList.remove("show");
+},
+3000
+);
 
-          let statusClass =
-            "status-pending";
-
-
-          if (
-            status ===
-            "paid"
-          ) {
-
-            statusClass =
-              "status-paid";
-
-          }
+}
 
 
-          if (
-            status ===
-            "failed"
-          ) {
+/* =========================================================
+   ESCAPE
+========================================================= */
 
-            statusClass =
-              "status-failed";
+function escapeHtml(value){
 
-          }
+return String(value)
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
 
-
-          const date =
-            item.createdAt
-              ? new Date(
-                  item.createdAt
-                ).toLocaleString()
-              : "";
+}
 
 
-         
+/* =========================================================
+   START
+========================================================= */
+
+immediateUI();
+
+startCooldownTimer();
+
+/*
+ UI appears immediately.
+ Backend sync happens in background.
+*/
+setTimeout(
+()=>{
+sync();
+},
+0
+);
+
+</script>
+
+</body>
+</html>
