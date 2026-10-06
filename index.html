@@ -535,22 +535,15 @@ Confirm
 
 <script>
 
-/* =========================================================
-   FAST INITIALIZATION
-========================================================= */
-
-const tg =
-window.Telegram?.WebApp || null;
+const tg=window.Telegram?.WebApp||null;
 
 if(tg){
-
 try{
 tg.ready();
 tg.expand();
 tg.setHeaderColor("#080b12");
 tg.setBackgroundColor("#080b12");
 }catch(e){}
-
 }
 
 
@@ -559,25 +552,15 @@ tg.setBackgroundColor("#080b12");
 ========================================================= */
 
 const CONFIG={
-
 APP_NAME:"NX Coin",
-
 BOT_USERNAME:"NXCoinRobot",
-
 API_BASE:"https://usdtbot-production-89e9.up.railway.app",
-
 STARTING_BALANCE:500,
-
 TASK_REWARD:50,
-
 REFERRAL_REWARD:100,
-
 MIN_WITHDRAWAL:500,
-
 TASK_COOLDOWN_HOURS:24,
-
 NX_PER_USDT:10000
-
 };
 
 
@@ -586,28 +569,29 @@ NX_PER_USDT:10000
 ========================================================= */
 
 let state={
-
 balance:CONFIG.STARTING_BALANCE,
-
 referrals:0,
-
 referralReward:0,
-
 tasks:[],
-
 payouts:[],
-
 user:null
-
 };
 
 let openedTasks=new Set();
 
-let cooldowns={};
+/*
+ Server-authoritative YouTube cooldowns.
+
+ Format:
+ {
+   1: timestamp,
+   2: timestamp
+ }
+*/
+let serverCooldowns={};
 
 /*
- Telegram tasks are ONE-TIME tasks.
- Their completed state is kept separately.
+ Telegram tasks are one-time.
 */
 let telegramDone={};
 
@@ -624,18 +608,12 @@ amount:0
 ========================================================= */
 
 function telegramDoneKey(id){
-
 return "nx_telegram_done_"+Number(id);
-
 }
-
 
 function isTelegramDone(id){
-
 return telegramDone[Number(id)]===true;
-
 }
-
 
 function markTelegramDone(id){
 
@@ -643,13 +621,14 @@ const taskId=Number(id);
 
 telegramDone[taskId]=true;
 
+try{
 localStorage.setItem(
 telegramDoneKey(taskId),
 "1"
 );
+}catch(e){}
 
 }
-
 
 function loadTelegramDone(){
 
@@ -663,16 +642,18 @@ state.tasks.forEach(task=>{
 if(task.type!=="telegram")
 return;
 
+try{
+
 const value=
 localStorage.getItem(
 telegramDoneKey(task.id)
 );
 
 if(value==="1"){
-
 telegramDone[Number(task.id)]=true;
-
 }
+
+}catch(e){}
 
 });
 
@@ -697,15 +678,14 @@ CONFIG.STARTING_BALANCE.toLocaleString();
 document.getElementById("availableBalance").textContent=
 CONFIG.STARTING_BALANCE.toLocaleString()+" NX Coins";
 
-const user=
-tg?.initDataUnsafe?.user;
+const user=tg?.initDataUnsafe?.user;
 
 if(user){
 
 document.getElementById("avatar").textContent=
 (
-user.first_name ||
-user.username ||
+user.first_name||
+user.username||
 "N"
 ).charAt(0).toUpperCase();
 
@@ -721,11 +701,8 @@ buildReferralLink();
 ========================================================= */
 
 function getInitData(){
-
-return tg?.initData || "";
-
+return tg?.initData||"";
 }
-
 
 async function api(path,options={}){
 
@@ -733,18 +710,12 @@ const response=
 await fetch(
 CONFIG.API_BASE+path,
 {
-
 ...options,
-
 headers:{
 "Content-Type":"application/json",
-
-"X-Telegram-Init-Data":
-getInitData(),
-
+"X-Telegram-Init-Data":getInitData(),
 ...(options.headers||{})
 }
-
 }
 );
 
@@ -767,101 +738,73 @@ data?.reason||
 error.data=data;
 
 throw error;
-
 }
 
 return data;
-
 }
 
 
 /* =========================================================
-   YOUTUBE COOLDOWN ONLY
+   SERVER COOLDOWN
 ========================================================= */
-
-function cooldownKey(id){
-
-return "nx_task_cd_"+Number(id);
-
-}
-
-
-function saveCooldown(id,next){
-
-const task=
-state.tasks.find(
-x=>Number(x.id)===Number(id)
-);
-
-if(!task)
-return;
 
 /*
  IMPORTANT:
- Telegram tasks NEVER get cooldown.
+
+Do NOT use localStorage for YouTube cooldown.
+
+The backend/Supabase is the source of truth.
 */
-if(task.type==="telegram")
-return;
+
+function setServerCooldown(id,nextClaimAt){
+
+const taskId=Number(id);
 
 const time=
-new Date(next).getTime();
-
-if(!Number.isFinite(time))
-return;
-
-localStorage.setItem(
-cooldownKey(id),
-String(time)
-);
-
-cooldowns[Number(id)]=time;
-
-}
-
-
-function loadCooldowns(){
-
-cooldowns={};
-
-state.tasks.forEach(task=>{
-
-/*
- Telegram tasks never load cooldown.
-*/
-if(task.type==="telegram"){
-
-localStorage.removeItem(
-cooldownKey(task.id)
-);
-
-return;
-
-}
-
-const raw=
-localStorage.getItem(
-cooldownKey(task.id)
-);
-
-if(!raw)
-return;
-
-const time=Number(raw);
+new Date(nextClaimAt).getTime();
 
 if(
 !Number.isFinite(time)||
 time<=Date.now()
 ){
 
-localStorage.removeItem(
-cooldownKey(task.id)
-);
+delete serverCooldowns[taskId];
 
 return;
-
 }
 
-cooldowns[Number(task.id)]=time;
+serverCooldowns[taskId]=time;
+}
+
+
+function loadServerTaskState(){
+
+serverCooldowns={};
+
+state.tasks.forEach(task=>{
+
+const id=Number(task.id);
+
+if(task.type==="telegram")
+return;
+
+/*
+ Backend /sync returns:
+ claimed: true/false
+ nextClaimAt: ISO timestamp
+*/
+
+if(
+task.claimed===true &&
+task.nextClaimAt
+){
+
+setServerCooldown(
+id,
+task.nextClaimAt
+);
+
+}
 
 });
 
@@ -876,19 +819,18 @@ x=>Number(x.id)===Number(id)
 );
 
 /*
- Telegram tasks have NO cooldown.
+ Telegram tasks never have cooldown.
 */
 if(task?.type==="telegram")
 return 0;
 
 const time=
-Number(cooldowns[Number(id)]||0);
+Number(serverCooldowns[Number(id)]||0);
 
 if(!time||time<=Date.now())
 return 0;
 
 return time-Date.now();
-
 }
 
 
@@ -914,7 +856,6 @@ String(hours).padStart(2,"0")+
 String(minutes).padStart(2,"0")+
 "m"
 );
-
 }
 
 
@@ -927,17 +868,13 @@ setInterval(()=>{
 
 let changed=false;
 
-Object.keys(cooldowns).forEach(id=>{
+Object.keys(serverCooldowns).forEach(id=>{
 
 if(
-remaining(id)<=0
+remaining(Number(id))<=0
 ){
 
-delete cooldowns[Number(id)];
-
-localStorage.removeItem(
-cooldownKey(id)
-);
+delete serverCooldowns[Number(id)];
 
 changed=true;
 
@@ -946,7 +883,8 @@ changed=true;
 });
 
 if(
-document.getElementById("earnPage")
+document
+.getElementById("earnPage")
 .classList.contains("active")
 ){
 
@@ -977,54 +915,81 @@ body:"{}"
 );
 
 
+/*
+ IMPORTANT:
+ Do not overwrite working UI with zero
+ when backend response is incomplete.
+*/
+if(
+data &&
+Object.prototype.hasOwnProperty.call(data,"balance")
+){
+
 state.balance=
-Number(
-data.balance||0
-);
+Number(data.balance);
+
+}
+
+if(
+data &&
+Object.prototype.hasOwnProperty.call(data,"referrals")
+){
 
 state.referrals=
-Number(
-data.referrals||0
-);
+Number(data.referrals);
+
+}
+
+if(
+data &&
+Object.prototype.hasOwnProperty.call(data,"referralReward")
+){
 
 state.referralReward=
-Number(
-data.referralReward||0
-);
+Number(data.referralReward);
 
-state.tasks=
-Array.isArray(data.tasks)
-?data.tasks
-:[];
+}
 
-state.payouts=
-Array.isArray(data.payouts)
-?data.payouts
-:[];
+if(
+Array.isArray(data?.tasks)
+){
+
+state.tasks=data.tasks;
+
+}
+
+if(
+Array.isArray(data?.payouts)
+){
+
+state.payouts=data.payouts;
+
+}
 
 state.user=
-data.user||null;
+data?.user||state.user;
 
 
 /*
- Load YouTube cooldowns.
-*/
-loadCooldowns();
-
-/*
- Load permanent Telegram Done states.
+ Load Telegram permanent state.
 */
 loadTelegramDone();
 
+
+/*
+ NEW:
+ Load YouTube cooldown directly
+ from server /sync response.
+*/
+loadServerTaskState();
+
+
 renderState();
-
 renderTasks();
-
 renderHistory();
-
 buildReferralLink();
-
 startCooldownTimer();
+
 
 }catch(error){
 
@@ -1049,22 +1014,23 @@ showToast(
 function renderState(){
 
 document.getElementById("balance").textContent=
-state.balance.toLocaleString();
+Number(state.balance||0).toLocaleString();
 
 document.getElementById("totalEarned").textContent=
-state.balance.toLocaleString();
+Number(state.balance||0).toLocaleString();
 
 document.getElementById("referrals").textContent=
-state.referrals.toLocaleString();
+Number(state.referrals||0).toLocaleString();
 
 document.getElementById("referralCount").textContent=
-state.referrals.toLocaleString();
+Number(state.referrals||0).toLocaleString();
 
 document.getElementById("referralEarned").textContent=
-state.referralReward.toLocaleString();
+Number(state.referralReward||0).toLocaleString();
 
 document.getElementById("availableBalance").textContent=
-state.balance.toLocaleString()+" NX Coins";
+Number(state.balance||0).toLocaleString()+
+" NX Coins";
 
 }
 
@@ -1139,7 +1105,6 @@ list.innerHTML=
 `<div class="empty">Loading tasks...</div>`;
 
 return;
-
 }
 
 
@@ -1151,13 +1116,15 @@ const id=Number(task.id);
 const telegram=
 task.type==="telegram";
 
+
 /*
- YouTube only:
- 24h cooldown.
+ YouTube:
+ Server-authoritative cooldown.
 
  Telegram:
- permanent Done.
+ Permanent Done.
 */
+
 const left=
 telegram?0:remaining(id);
 
@@ -1174,6 +1141,7 @@ let text=
 telegram?"Join":"Watch";
 
 let cls="";
+
 
 if(done){
 
@@ -1194,6 +1162,7 @@ Number(task.reward||50)+
 cls="primary";
 
 }
+
 
 return `
 
@@ -1248,7 +1217,7 @@ return;
 
 
 /*
- Telegram task already completed.
+ Telegram already completed.
 */
 if(
 task.type==="telegram" &&
@@ -1263,7 +1232,7 @@ return;
 
 
 /*
- Cooldown applies ONLY to YouTube.
+ YouTube server cooldown.
 */
 if(
 task.type!=="telegram" &&
@@ -1282,6 +1251,10 @@ return;
 }
 
 
+/*
+ First click opens task.
+ Second click claims.
+*/
 if(
 openedTasks.has(id)
 ){
@@ -1396,19 +1369,16 @@ taskId:id
 
 state.balance=
 Number(
-result.balance||
+result.balance ??
 state.balance
 );
-
 
 openedTasks.delete(id);
 
 
 /*
  TELEGRAM:
- One-time task.
- No cooldown.
- Permanently mark Done.
+ Permanent Done.
 */
 if(telegram){
 
@@ -1430,18 +1400,35 @@ return;
 
 /*
  YOUTUBE:
- 24h cooldown.
+ Use backend's exact nextClaimAt.
 */
-saveCooldown(
-id,
+const nextClaimAt=
 result.nextClaimAt||
-result.next_claim_at||
-(
+result.next_claim_at;
+
+if(nextClaimAt){
+
+setServerCooldown(
+id,
+nextClaimAt
+);
+
+}else{
+
+/*
+ Fallback only if backend does not return
+ nextClaimAt.
+*/
+setServerCooldown(
+id,
+new Date(
 Date.now()+
 CONFIG.TASK_COOLDOWN_HOURS*
 60*60*1000
-)
+).toISOString()
 );
+
+}
 
 
 renderState();
@@ -1463,14 +1450,12 @@ error.data||{};
 
 
 /*
- Telegram task:
- Backend says already claimed.
- Mark Done locally.
+ Telegram already claimed.
 */
 if(
 telegram &&
 (
-data.reason==="ALREADY_CLAIMED" ||
+data.reason==="ALREADY_CLAIMED"||
 data.reason==="TASK_ALREADY_CLAIMED"
 )
 ){
@@ -1488,7 +1473,36 @@ return;
 }
 
 
+/*
+ YouTube cooldown returned by backend.
+*/
+if(
+!telegram &&
+data.reason==="COOLDOWN"
+){
+
+const next=
+data.next_claim_at||
+data.nextClaimAt;
+
+if(next){
+
+setServerCooldown(
+id,
+next
+);
+
+}
+
 renderTasks();
+
+showToast(
+"⏳ Task is still on cooldown."
+);
+
+return;
+
+}
 
 
 if(
@@ -1509,40 +1523,7 @@ return;
 }
 
 
-/*
- Cooldown is only relevant for YouTube.
-*/
-if(
-!telegram &&
-data.reason==="COOLDOWN"
-){
-
-if(data.next_claim_at){
-
-saveCooldown(
-id,
-data.next_claim_at
-);
-
-}else if(data.nextClaimAt){
-
-saveCooldown(
-id,
-data.nextClaimAt
-);
-
-}
-
 renderTasks();
-
-showToast(
-"⏳ Task is still on cooldown."
-);
-
-return;
-
-}
-
 
 showToast(
 error.message||
@@ -1572,13 +1553,17 @@ CONFIG.BOT_USERNAME+
 "?start=ref_"+
 user.id;
 
-document.getElementById(
-"referralInput"
-).value=link;
+const input1=
+document.getElementById("referralInput");
 
-document.getElementById(
-"referralInput2"
-).value=link;
+const input2=
+document.getElementById("referralInput2");
+
+if(input1)
+input1.value=link;
+
+if(input2)
+input2.value=link;
 
 }
 
@@ -1586,9 +1571,7 @@ document.getElementById(
 async function copyReferral(){
 
 const input=
-document.getElementById(
-"referralInput"
-);
+document.getElementById("referralInput");
 
 if(!input?.value)
 return;
@@ -1621,9 +1604,7 @@ showToast(
 function shareReferral(){
 
 const input=
-document.getElementById(
-"referralInput"
-);
+document.getElementById("referralInput");
 
 if(!input?.value)
 return;
@@ -1817,15 +1798,9 @@ await api(
 "/payout",
 {
 method:"POST",
-
 body:JSON.stringify({
-
-wallet:
-pendingWithdrawal.wallet,
-
-amount:
-pendingWithdrawal.amount
-
+wallet:pendingWithdrawal.wallet,
+amount:pendingWithdrawal.amount
 })
 }
 );
@@ -2028,10 +2003,6 @@ immediateUI();
 
 startCooldownTimer();
 
-/*
- UI appears immediately.
- Backend sync happens in background.
-*/
 setTimeout(
 ()=>{
 sync();
