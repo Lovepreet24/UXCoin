@@ -44,10 +44,12 @@ body{overflow-x:hidden}
 .feature-title{font-size:14px;font-weight:800}
 .feature-description{color:#80899a;font-size:11px;line-height:1.5;margin-top:3px}
 .primary-btn{width:100%;min-height:46px;border:0;border-radius:14px;color:white;font-weight:800;font-size:13px;background:linear-gradient(135deg,#7158ff,#397cf6);box-shadow:0 8px 22px rgba(76,91,246,.2)}
+.primary-btn:disabled{opacity:.6}
+.danger-btn{width:100%;min-height:46px;border:1px solid #4a2428;border-radius:14px;color:#e2767d;font-weight:800;font-size:13px;background:#2a191b}
+.danger-btn:disabled{opacity:.6}
 
 .task-list{display:flex;flex-direction:column;gap:10px}
 
-/* Separate AdsGram section styling */
 .adsgram-section{margin-bottom:24px}
 .adsgram-section .section-head h2{display:flex;align-items:center;gap:7px}
 .adsgram-list .task{background:linear-gradient(110deg,#121827,#10141e);border-color:#292a45}
@@ -103,9 +105,14 @@ body{overflow-x:hidden}
 .status-failed{background:#2a191b;color:#e2767d}
 .empty{padding:28px 15px;text-align:center;color:#6f788a;font-size:11px;background:#10141e;border:1px solid #202735;border-radius:18px}
 
+.admin-result{margin-top:12px;padding:12px;border-radius:12px;background:#0b0f17;border:1px solid #252d3d;color:#9fe3c0;font-size:11px;line-height:1.55;display:none;overflow-wrap:anywhere}
+.admin-result.show{display:block}
+.admin-result.err{color:#e2767d}
+
 .page{display:none}
 .page.active{display:block}
 .bottom-nav{position:fixed;left:50%;bottom:12px;transform:translateX(-50%);width:calc(100% - 26px);max-width:494px;padding:8px;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;border-radius:20px;background:rgba(16,20,29,.95);border:1px solid #252c3a;backdrop-filter:blur(18px);z-index:50}
+.bottom-nav.has-admin{grid-template-columns:repeat(5,1fr)}
 .nav-btn{min-height:53px;border:0;border-radius:14px;background:transparent;color:#70798c;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:9px;font-weight:750}
 .nav-icon{font-size:17px;line-height:1}
 .nav-btn.active{background:#1a2030;color:#dce2ef}
@@ -191,9 +198,7 @@ body{overflow-x:hidden}
   </section>
 </main>
 
-<!-- EARN PAGE: ADSGRAM SECTION FIRST -->
 <main id="earnPage" class="page">
-
   <section class="adsgram-section">
     <div class="section-head">
       <h2>🎬 AdsGram Ads</h2>
@@ -291,13 +296,54 @@ body{overflow-x:hidden}
   <div id="historyList" class="history-list"><div class="empty">No withdrawals yet.</div></div>
 </main>
 
+<!-- ADMIN PAGE (sirf admin ko dikhta hai) -->
+<main id="adminPage" class="page">
+  <div class="section-head"><h2>🛠 Admin Panel</h2><span>Only you</span></div>
+
+  <section class="wallet-card" style="margin-top:0">
+    <div class="wallet-header">
+      <div class="wallet-icon">➕</div>
+      <div>
+        <div class="wallet-title">Add Balance</div>
+        <div class="wallet-subtitle">Kisi bhi user ko NX Coins add karo</div>
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label class="input-label">User Telegram ID</label>
+      <input id="adminUserId" class="wallet-input" type="number" inputmode="numeric" placeholder="e.g. 123456789">
+    </div>
+
+    <div class="input-group">
+      <label class="input-label">NX Coins Amount</label>
+      <input id="adminAmount" class="wallet-input" type="number" inputmode="numeric" min="1" step="1" placeholder="e.g. 5000">
+    </div>
+
+    <button class="primary-btn" id="adminAddBtn" type="button" onclick="adminAddBalance()">Add Balance</button>
+    <div class="admin-result" id="adminResult"></div>
+  </section>
+
+  <section class="wallet-card">
+    <div class="wallet-header">
+      <div class="wallet-icon">🧹</div>
+      <div>
+        <div class="wallet-title">Pending Withdrawals</div>
+        <div class="wallet-subtitle">Sab stuck pending ko fail karke refund do</div>
+      </div>
+    </div>
+    <button class="danger-btn" id="adminFailBtn" type="button" onclick="adminFailPending()">Fail All Pending & Refund</button>
+    <div class="admin-result" id="adminResult2"></div>
+  </section>
+</main>
+
 </div>
 
-<nav class="bottom-nav">
+<nav class="bottom-nav" id="bottomNav">
   <button class="nav-btn active" id="navHome" type="button" onclick="openPage('home')"><span class="nav-icon">⌂</span>Home</button>
   <button class="nav-btn" id="navEarn" type="button" onclick="openPage('earn')"><span class="nav-icon">⚡</span>Earn</button>
   <button class="nav-btn" id="navReferral" type="button" onclick="openPage('referral')"><span class="nav-icon">👥</span>Refer</button>
   <button class="nav-btn" id="navWallet" type="button" onclick="openPage('wallet')"><span class="nav-icon">◈</span>Withdraw</button>
+  <button class="nav-btn" id="navAdmin" type="button" style="display:none" onclick="openPage('admin')"><span class="nav-icon">🛠</span>Admin</button>
 </nav>
 
 <div class="modal-overlay" id="confirmModal">
@@ -313,7 +359,7 @@ body{overflow-x:hidden}
 
     <div class="modal-actions">
       <button class="cancel-btn" type="button" onclick="closeWithdrawModal()">Cancel</button>
-      <button class="primary-btn" type="button" onclick="submitWithdrawal()">Confirm</button>
+      <button class="primary-btn" id="confirmWithdrawBtn" type="button" onclick="submitWithdrawal()">Confirm</button>
     </div>
   </div>
 </div>
@@ -354,7 +400,8 @@ let state = {
   tasks: [],
   adsgramBlockId: "52783",
   payouts: [],
-  user: null
+  user: null,
+  isAdmin: false
 };
 
 let pendingWithdrawal = { wallet: "", amount: 0 };
@@ -372,10 +419,7 @@ async function api(path, options = {}) {
     ...(options.headers || {})
   };
 
-  const response = await fetch(CONFIG.API_BASE + path, {
-    ...options,
-    headers
-  });
+  const response = await fetch(CONFIG.API_BASE + path, { ...options, headers });
 
   let data = null;
   try {
@@ -412,15 +456,13 @@ function setupUser() {
       initials = (user.username || "N").charAt(0).toUpperCase();
     }
 
-    const link =
-      `https://t.me/${CONFIG.BOT_USERNAME}/app?startapp=ref_${user.id}`;
+    const link = `https://t.me/${CONFIG.BOT_USERNAME}/app?startapp=ref_${user.id}`;
 
     document.getElementById("referralInput").value = link;
     document.getElementById("referralInput2").value = link;
   }
 
-  document.getElementById("avatar").textContent =
-    initials.substring(0, 2);
+  document.getElementById("avatar").textContent = initials.substring(0, 2);
 }
 
 /* SYNC */
@@ -434,13 +476,10 @@ async function sync() {
   state.referrals = Number(data.referrals || 0);
   state.referralReward = Number(data.referralReward || 0);
   state.minWithdrawal = Number(data.minWithdrawal || CONFIG.MIN_WITHDRAWAL);
-
-  state.taskCooldownHours = Number(
-    data.taskCooldownHours || CONFIG.TASK_COOLDOWN_HOURS
-  );
-
+  state.taskCooldownHours = Number(data.taskCooldownHours || CONFIG.TASK_COOLDOWN_HOURS);
   state.tasks = Array.isArray(data.tasks) ? data.tasks : [];
   state.adsgramBlockId = String(data.adsgramBlockId || "52783");
+  state.isAdmin = Boolean(data.isAdmin);
 
   claimedTasks = new Set(
     state.tasks.filter(t => t.claimed).map(t => Number(t.id))
@@ -456,35 +495,20 @@ async function sync() {
 
 /* STATE UI */
 function renderState() {
-  document.getElementById("balance").textContent =
-    state.balance.toLocaleString();
+  document.getElementById("balance").textContent = state.balance.toLocaleString();
+  document.getElementById("totalEarned").textContent = state.balance.toLocaleString();
+  document.getElementById("referrals").textContent = state.referrals.toLocaleString();
+  document.getElementById("referralCount").textContent = state.referrals.toLocaleString();
+  document.getElementById("referralEarned").textContent = state.referralReward.toLocaleString();
+  document.getElementById("referralRewardValue").textContent = CONFIG.REFERRAL_REWARD.toLocaleString();
+  document.getElementById("cooldownText").textContent = state.taskCooldownHours + "h";
+  document.getElementById("availableBalance").textContent = state.balance.toLocaleString() + " NX Coins";
+  document.getElementById("minimumText").textContent = state.minWithdrawal.toLocaleString() + " NX Coins";
+  document.getElementById("withdrawAmount").min = state.minWithdrawal;
 
-  document.getElementById("totalEarned").textContent =
-    state.balance.toLocaleString();
-
-  document.getElementById("referrals").textContent =
-    state.referrals.toLocaleString();
-
-  document.getElementById("referralCount").textContent =
-    state.referrals.toLocaleString();
-
-  document.getElementById("referralEarned").textContent =
-    state.referralReward.toLocaleString();
-
-  document.getElementById("referralRewardValue").textContent =
-    CONFIG.REFERRAL_REWARD.toLocaleString();
-
-  document.getElementById("cooldownText").textContent =
-    state.taskCooldownHours + "h";
-
-  document.getElementById("availableBalance").textContent =
-    state.balance.toLocaleString() + " NX Coins";
-
-  document.getElementById("minimumText").textContent =
-    state.minWithdrawal.toLocaleString() + " NX Coins";
-
-  document.getElementById("withdrawAmount").min =
-    state.minWithdrawal;
+  /* Admin tab sirf admin ko dikhega */
+  document.getElementById("navAdmin").style.display = state.isAdmin ? "flex" : "none";
+  document.getElementById("bottomNav").classList.toggle("has-admin", state.isAdmin);
 }
 
 /* NAVIGATION */
@@ -493,15 +517,19 @@ function openPage(name) {
     home: "homePage",
     earn: "earnPage",
     referral: "referralPage",
-    wallet: "walletPage"
+    wallet: "walletPage",
+    admin: "adminPage"
   };
 
   const navs = {
     home: "navHome",
     earn: "navEarn",
     referral: "navReferral",
-    wallet: "navWallet"
+    wallet: "navWallet",
+    admin: "navAdmin"
   };
+
+  if (name === "admin" && !state.isAdmin) return;
 
   Object.values(pages).forEach(id =>
     document.getElementById(id)?.classList.remove("active")
@@ -526,72 +554,46 @@ function taskIcon(task) {
   return "▶️";
 }
 
-/* TASK RENDERING
-   AdsGram tasks are rendered in their own section at the top.
-   Other tasks retain their existing flow.
-*/
+/* TASK RENDERING */
 function renderTasks() {
   const list = document.getElementById("taskList");
   const adsgramList = document.getElementById("adsgramTaskList");
 
-  const adsgramTasks = state.tasks.filter(
-    task => task.type === "adsgram"
-  );
+  const adsgramTasks = state.tasks.filter(task => task.type === "adsgram");
+  const otherTasks = state.tasks.filter(task => task.type !== "adsgram");
 
-  const otherTasks = state.tasks.filter(
-    task => task.type !== "adsgram"
-  );
-
-  /* ADSGRAM SECTION */
   if (!adsgramTasks.length) {
-    adsgramList.innerHTML =
-      `<div class="empty">No AdsGram ads available.</div>`;
+    adsgramList.innerHTML = `<div class="empty">No AdsGram ads available.</div>`;
   } else {
     adsgramList.innerHTML = adsgramTasks.map(task => {
       const id = Number(task.id);
-
-      const isClaimed =
-        claimedTasks.has(id) || Boolean(task.claimed);
+      const isClaimed = claimedTasks.has(id) || Boolean(task.claimed);
 
       return `
         <div class="task">
           <div class="task-icon">🎬</div>
-
           <div class="task-info">
-            <div class="task-title">
-              ${escapeHtml(task.title || "Watch AdsGram Ad")}
-            </div>
-
-            <div class="task-reward">
-              +${Number(task.reward || 10).toLocaleString()} NX Coins
-            </div>
+            <div class="task-title">${escapeHtml(task.title || "Watch AdsGram Ad")}</div>
+            <div class="task-reward">+${Number(task.reward || 10).toLocaleString()} NX Coins</div>
           </div>
-
           <button
             id="taskBtn${id}"
             class="task-btn ${isClaimed ? "success" : "primary"}"
             type="button"
             ${isClaimed ? "disabled" : ""}
             onclick="watchAdsgramAd(${id})"
-          >
-            ${isClaimed ? "Claimed ✓" : "Watch Ad"}
-          </button>
+          >${isClaimed ? "Claimed ✓" : "Watch Ad"}</button>
         </div>
       `;
     }).join("");
   }
 
-  /* YOUTUBE AND TELEGRAM TASKS */
   if (!otherTasks.length) {
-    list.innerHTML =
-      `<div class="empty">No other tasks available.</div>`;
+    list.innerHTML = `<div class="empty">No other tasks available.</div>`;
   } else {
     list.innerHTML = otherTasks.map(task => {
       const id = Number(task.id);
-
-      const isClaimed =
-        claimedTasks.has(id) || Boolean(task.claimed);
-
+      const isClaimed = claimedTasks.has(id) || Boolean(task.claimed);
       const isTelegram = task.type === "telegram";
 
       const buttonText = isClaimed
@@ -601,26 +603,17 @@ function renderTasks() {
       return `
         <div class="task">
           <div class="task-icon">${taskIcon(task)}</div>
-
           <div class="task-info">
-            <div class="task-title">
-              ${escapeHtml(task.title || "Task")}
-            </div>
-
-            <div class="task-reward">
-              +${Number(task.reward || 50).toLocaleString()} NX Coins
-            </div>
+            <div class="task-title">${escapeHtml(task.title || "Task")}</div>
+            <div class="task-reward">+${Number(task.reward || 50).toLocaleString()} NX Coins</div>
           </div>
-
           <button
             id="taskBtn${id}"
             class="task-btn ${isClaimed ? "success" : "primary"}"
             type="button"
             ${isClaimed ? "disabled" : ""}
             onclick="handleTask(${id})"
-          >
-            ${buttonText}
-          </button>
+          >${buttonText}</button>
         </div>
       `;
     }).join("");
@@ -638,13 +631,7 @@ async function watchAdsgramAd(taskId) {
 
   const button = document.getElementById(`taskBtn${taskId}`);
 
-  if (
-    !task ||
-    !button ||
-    task.claimed ||
-    claimedTasks.has(Number(taskId)) ||
-    adsgramBusy
-  ) {
+  if (!task || !button || task.claimed || claimedTasks.has(Number(taskId)) || adsgramBusy) {
     return;
   }
 
@@ -694,9 +681,7 @@ async function watchAdsgramAd(taskId) {
     if (data.reason === "ALREADY_CLAIMED") {
       claimedTasks.add(Number(taskId));
       task.claimed = true;
-
       renderTasks();
-
       showToast("Is ad ka reward pehle claim ho chuka hai.");
     } else {
       showToast("Ad skip/error hua ya reward claim nahi ho saka. NX add nahi hue.");
@@ -716,11 +701,9 @@ async function watchAdsgramAd(taskId) {
   }
 }
 
-/* EXISTING YOUTUBE AND TELEGRAM TASK FLOW */
+/* YOUTUBE AND TELEGRAM TASK FLOW */
 function handleTask(taskId) {
-  const task = state.tasks.find(
-    x => Number(x.id) === Number(taskId)
-  );
+  const task = state.tasks.find(x => Number(x.id) === Number(taskId));
 
   if (!task || task.type === "adsgram") return;
 
@@ -745,19 +728,24 @@ function handleTask(taskId) {
     }
   }
 
+  const reward = Number(task.reward || 50);
+
   if (button) {
     button.dataset.readyToClaim = "1";
-    button.textContent = "Claim 50 NX";
+    button.textContent = `Claim ${reward} NX`;
   }
 
   if (task.type === "telegram") {
-    showToast(`Join ${task.channel || "the channel"} first, then tap Claim 50 NX.`);
+    showToast(`Join ${task.channel || "the channel"} first, then tap Claim ${reward} NX.`);
   } else {
-    showToast("Watch the video, then tap Claim 50 NX.");
+    showToast(`Watch the video, then tap Claim ${reward} NX.`);
   }
 }
 
 async function claimTask(taskId, button) {
+  const task = state.tasks.find(x => Number(x.id) === Number(taskId));
+  const reward = Number(task?.reward || 50);
+
   if (button) {
     button.disabled = true;
     button.textContent = "Checking...";
@@ -775,23 +763,19 @@ async function claimTask(taskId, button) {
     renderState();
     renderTasks();
 
-    showToast(
-      `🎉 +${Number(result.reward || 50).toLocaleString()} NX Coins added!`
-    );
+    showToast(`🎉 +${Number(result.reward || reward).toLocaleString()} NX Coins added!`);
 
   } catch (error) {
     if (button) {
       button.disabled = false;
-      button.textContent = "Claim 50 NX";
+      button.textContent = `Claim ${reward} NX`;
       button.dataset.readyToClaim = "1";
     }
 
     const d = error.data || {};
 
-    if (d.error === "CHANNEL_NOT_JOINED") {
-      showToast(
-        `❌ Join ${d.channel || "the channel"} first, then try again.`
-      );
+    if (d.reason === "CHANNEL_NOT_JOINED") {
+      showToast(`❌ Join ${d.channel || "the channel"} first, then try again.`);
       return;
     }
 
@@ -871,9 +855,7 @@ function requestWithdrawal() {
   }
 
   if (amount < state.minWithdrawal) {
-    showToast(
-      `Minimum withdrawal is ${state.minWithdrawal.toLocaleString()} NX Coins.`
-    );
+    showToast(`Minimum withdrawal is ${state.minWithdrawal.toLocaleString()} NX Coins.`);
     return;
   }
 
@@ -884,12 +866,8 @@ function requestWithdrawal() {
 
   pendingWithdrawal = { wallet, amount };
 
-  document.getElementById("confirmAmount").textContent =
-    amount.toLocaleString() + " NX Coins";
-
-  document.getElementById("confirmWallet").textContent =
-    shortenAddress(wallet);
-
+  document.getElementById("confirmAmount").textContent = amount.toLocaleString() + " NX Coins";
+  document.getElementById("confirmWallet").textContent = shortenAddress(wallet);
   document.getElementById("confirmModal").classList.add("show");
 }
 
@@ -911,8 +889,7 @@ async function submitWithdrawal() {
     return;
   }
 
-  const confirmButton =
-    document.querySelector(".modal .primary-btn");
+  const confirmButton = document.getElementById("confirmWithdrawBtn");
 
   if (confirmButton) {
     confirmButton.disabled = true;
@@ -930,10 +907,14 @@ async function submitWithdrawal() {
     document.getElementById("walletAddress").value = "";
     document.getElementById("withdrawAmount").value = "";
 
-    if (result?.payout?.status === "paid") {
+    const st = result?.payout?.status;
+
+    if (st === "paid") {
       showToast("✅ Withdrawal successful.");
+    } else if (st === "failed") {
+      showToast("❌ Withdrawal failed. NX Coins wapas aapke balance mein add ho gaye.");
     } else {
-      showToast("⏳ Withdrawal submitted.");
+      showToast("⏳ Withdrawal processing...");
     }
 
     await sync();
@@ -953,16 +934,11 @@ async function submitWithdrawal() {
 /* WITHDRAWAL HISTORY */
 async function loadWithdrawalHistory() {
   try {
-    const result = await api("/payouts", {
-      method: "GET"
-    });
+    const result = await api("/payouts", { method: "GET" });
 
-    state.payouts = Array.isArray(result?.payouts)
-      ? result.payouts
-      : [];
+    state.payouts = Array.isArray(result?.payouts) ? result.payouts : [];
 
     renderHistory();
-
   } catch {
     renderHistory();
   }
@@ -972,8 +948,7 @@ function renderHistory() {
   const container = document.getElementById("historyList");
 
   if (!state.payouts.length) {
-    container.innerHTML =
-      `<div class="empty">No withdrawals yet.</div>`;
+    container.innerHTML = `<div class="empty">No withdrawals yet.</div>`;
     return;
   }
 
@@ -985,30 +960,115 @@ function renderHistory() {
     if (status === "paid") statusClass = "status-paid";
     if (status === "failed") statusClass = "status-failed";
 
-    const date = item.createdAt
-      ? new Date(item.createdAt).toLocaleString()
-      : "";
+    const date = item.createdAt ? new Date(item.createdAt).toLocaleString() : "";
 
     return `
       <div class="history-item">
         <div class="history-icon">◈</div>
-
         <div class="history-info">
-          <div class="history-amount">
-            ${Number(item.amount || 0).toLocaleString()} NX Coins
-          </div>
-
-          <div class="history-date">
-            ${escapeHtml(date)}
-          </div>
+          <div class="history-amount">${Number(item.amount || 0).toLocaleString()} NX Coins</div>
+          <div class="history-date">${escapeHtml(date)}</div>
         </div>
-
-        <div class="history-status ${statusClass}">
-          ${escapeHtml(status)}
-        </div>
+        <div class="history-status ${statusClass}">${escapeHtml(status)}</div>
       </div>
     `;
   }).join("");
+}
+
+/* ADMIN */
+function showAdminResult(id, text, isError) {
+  const el = document.getElementById(id);
+  el.textContent = text;
+  el.classList.add("show");
+  el.classList.toggle("err", Boolean(isError));
+}
+
+async function adminAddBalance() {
+  if (!state.isAdmin) return;
+
+  const chatId = document.getElementById("adminUserId").value.trim();
+  const amount = Number(document.getElementById("adminAmount").value);
+
+  if (!/^\d+$/.test(chatId)) {
+    showToast("Valid user Telegram ID daalo.");
+    return;
+  }
+
+  if (!Number.isInteger(amount) || amount <= 0) {
+    showToast("Valid amount daalo (whole number).");
+    return;
+  }
+
+  const btn = document.getElementById("adminAddBtn");
+  btn.disabled = true;
+  btn.textContent = "Adding...";
+
+  try {
+    const r = await api("/admin/add-balance", {
+      method: "POST",
+      body: JSON.stringify({ chatId, amount })
+    });
+
+    showAdminResult(
+      "adminResult",
+      `✅ ${r.added.toLocaleString()} NX added to ${r.chatId}${r.username ? " (@" + r.username + ")" : ""}\nNew balance: ${Number(r.balance).toLocaleString()} NX`,
+      false
+    );
+
+    document.getElementById("adminAmount").value = "";
+    showToast("✅ Balance added.");
+
+    /* Agar admin ne apne aap ko add kiya to balance refresh */
+    if (String(state.user?.id) === String(chatId)) await sync();
+
+  } catch (error) {
+    const msg = error.message === "USER_NOT_FOUND"
+      ? "User nahi mila (usne bot/app kabhi open nahi kiya)."
+      : (error.message || "Failed");
+
+    showAdminResult("adminResult", "❌ " + msg, true);
+    showToast("❌ " + msg);
+
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Add Balance";
+  }
+}
+
+async function adminFailPending() {
+  if (!state.isAdmin) return;
+
+  const run = async () => {
+    const btn = document.getElementById("adminFailBtn");
+    btn.disabled = true;
+    btn.textContent = "Working...";
+
+    try {
+      const r = await api("/admin/fail-pending", {
+        method: "POST",
+        body: JSON.stringify({})
+      });
+
+      showAdminResult(
+        "adminResult2",
+        `✅ Pending found: ${r.total}\nFailed: ${r.failed}\nRefunded: ${r.refunded}`,
+        false
+      );
+    } catch (error) {
+      showAdminResult("adminResult2", "❌ " + (error.message || "Failed"), true);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Fail All Pending & Refund";
+    }
+  };
+
+  const text = "Sab pending withdrawals fail honge aur users ko refund milega. Continue?";
+
+  if (tg?.showConfirm) {
+    tg.showConfirm(text, ok => { if (ok) run(); });
+  } else if (confirm(text)) {
+    run();
+  }
 }
 
 /* TOAST */
@@ -1051,8 +1111,11 @@ async function init() {
   } catch (error) {
     console.error("NX Coin sync error:", error);
 
+    const msg = String(error.message || "");
+    const isAuth = msg === "UNAUTHORIZED" || msg.includes("authentication");
+
     showToast(
-      error.message === "Telegram authentication required"
+      isAuth
         ? "Please open NX Coin from Telegram."
         : "Unable to connect to NX Coin."
     );
