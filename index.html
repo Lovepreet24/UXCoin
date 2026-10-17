@@ -1106,6 +1106,10 @@ async function init() {
 
   setupUser();
 
+  /* DEBUG: avatar par tap karo to ID aur admin status dikhega */
+  document.getElementById("avatar").onclick = () =>
+    showToast("ID: " + (getTelegramUser()?.id || "none") + " | admin: " + state.isAdmin);
+
   try {
     await sync();
   } catch (error) {
